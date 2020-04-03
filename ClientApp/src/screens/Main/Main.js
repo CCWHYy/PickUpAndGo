@@ -5,3 +5,5 @@ export const MainScreen = () => (
         Ci co wygrają hackyeah
     </div>
 );
+
+export default MainScreen;
