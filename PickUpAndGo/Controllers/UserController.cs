@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PickUpAndGo.Models;
+using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;
 
@@ -16,6 +17,8 @@ namespace PickUpAndGo.Controllers
     [Route("api/users")]
     public class UserController : CustomControllerBase
     {
+        private UnitOfWork uow;
+
         /// <summary>
         /// 
         /// </summary>
@@ -23,6 +26,7 @@ namespace PickUpAndGo.Controllers
         /// <param name="mapper"></param>
         public UserController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
+            uow = new UnitOfWork(dbContext);
         }
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace PickUpAndGo.Controllers
                 if (string.IsNullOrWhiteSpace(id))
                     return BadRequest("ID is required!");
 
-                var user = DbContext.Users.Find(id);
+                var user = uow.UserRepository.Get(id);
 
                 if (user != null)
                 {
@@ -69,20 +73,18 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public IActionResult Create([FromBody] CreateUserModel createUserModel)
+        public async Task<IActionResult> Create([FromBody] CreateUserModel createUserModel)
         {
             try
             {
                 // TODO some validation before
                 var entity = Mapper.Map<User>(createUserModel);
 
-                var createResponse = DbContext.Users.Add(entity);
+                uow.UserRepository.Add(entity);
 
-                DbContext.SaveChanges();
+                var createResponse = await uow.CompleteAsync();
 
-                var res = Mapper.Map<UserModel>(createResponse.Entity);
-
-                return Created(res);
+                return Created(entity);
             }
             catch (Exception e)
             {
