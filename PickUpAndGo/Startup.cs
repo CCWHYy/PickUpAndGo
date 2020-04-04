@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -107,6 +109,21 @@ namespace PickUpAndGo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            try
+            {
+                using var serviceScope = app.ApplicationServices.CreateScope();
+                var dbContext = serviceScope.ServiceProvider.GetService<AppDbContext>();
+                Console.WriteLine("Trying to update database...");
+                dbContext.Database.Migrate();
+                Console.WriteLine("Successfully updated database!");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("When trying to setup database...");
+                Console.WriteLine(e);
+                throw;
+            }
+
             app.UseSwagger();
             app.UseSwaggerUI(x =>
             {
