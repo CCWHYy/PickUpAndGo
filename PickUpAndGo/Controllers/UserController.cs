@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PickUpAndGo.Auth;
 using PickUpAndGo.Auth.Models;
@@ -25,14 +26,17 @@ namespace PickUpAndGo.Controllers
     {
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtHandler _jwtHandler;
+        private readonly AppSettings _appSettings;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public UserController(AppDbContext dbContext, IMapper mapper, IJwtHandler jwtHandler) : base(dbContext, mapper)
+        /// <param name="jwtHandler"></param>
+        public UserController(AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings, IJwtHandler jwtHandler) : base(dbContext, mapper)
         {
+            _appSettings = appsSettings.Value;
             _jwtHandler = jwtHandler;
             _passwordHasher = new PasswordHasher(new HashingOptions());
         }
@@ -163,6 +167,24 @@ namespace PickUpAndGo.Controllers
                     return Ok(Mapper.Map<UserModel>(user));
                 else
                     return NotFound();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return InternalServerError();
+            }
+        }
+
+        /// <summary>
+        /// Get current environment
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("env")]
+        public IActionResult Env()
+        {
+            try
+            {
+                return Ok(_appSettings.Environment);
             }
             catch (Exception e)
             {
