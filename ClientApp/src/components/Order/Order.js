@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -25,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
     details: {
         display: 'flex',
         flexFlow: 'column',
+    },
+    divider: {
+        margin: '16px 0',
     },
 }));
 
@@ -75,6 +79,10 @@ export const Order = ({ storeName, orderStatus, orderDate, orderPrice, items, qr
                 >
                     Pokaż kod QR
                 </Button>
+                <Divider component="p" className={ classes.divider } />
+                <Typography variant="h6" component="h6">
+                    Lista zakupów
+                </Typography>
                 <ItemsList items={ items } />
             </ExpansionPanelDetails>
             <QRModal qrUrl={ qrCode } open={ isQROpen } onClose={ closeQRModal } />
