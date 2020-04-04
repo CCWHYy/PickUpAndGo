@@ -36,36 +36,42 @@ const useStyles = makeStyles({
 });
 
 const ROLES = {
-  ADMIN: 'admin',
-  USER: 'user',
+  ADMIN: "admin",
+  USER: "user"
 };
 
-const navList = [{
-  link: '/shops',
-  Icon: <Storefront />,
-  text: 'Sklepy',
-  neededAccess: [ROLES.USER]
-}, {
-  link: '/orders',
-  Icon: <AccountCircle />,
-  text: 'Twoje konto',
-  neededAccess: [ROLES.USER]
-}, {
-  link: '/admin/store/details',
-  Icon: <AccountCircle />,
-  text: 'Twój sklep',
-  neededAccess: [ROLES.ADMIN]
-}, {
-  link: '/admin/store/products',
-  Icon: <AccountCircle />,
-  text: 'Twoje produkty',
-  neededAccess: [ROLES.ADMIN]
-}, {
-  link: '/admin/store/orders',
-  Icon: <AccountCircle />,
-  text: 'Twoje zamówienia',
-  neededAccess: [ROLES.ADMIN]
-}];
+const navList = [
+  {
+    link: "/shops",
+    Icon: <Storefront />,
+    text: "Sklepy",
+    neededAccess: [ROLES.USER]
+  },
+  {
+    link: "/orders",
+    Icon: <AccountCircle />,
+    text: "Twoje konto",
+    neededAccess: [ROLES.USER]
+  },
+  {
+    link: "/admin/store/details",
+    Icon: <AccountCircle />,
+    text: "Twój sklep",
+    neededAccess: [ROLES.ADMIN]
+  },
+  {
+    link: "/admin/store/products",
+    Icon: <AccountCircle />,
+    text: "Twoje produkty",
+    neededAccess: [ROLES.ADMIN]
+  },
+  {
+    link: "/admin/store/orders",
+    Icon: <AccountCircle />,
+    text: "Twoje zamówienia",
+    neededAccess: [ROLES.ADMIN]
+  }
+];
 
 export const Navbar = ({ items = [] }) => {
   const classes = useStyles();
@@ -82,7 +88,9 @@ export const Navbar = ({ items = [] }) => {
   };
 
   let productsNum = 0;
-  cartItems.forEach(({ quantity }) => { productsNum += quantity });
+  cartItems.forEach(({ quantity }) => {
+    productsNum += quantity;
+  });
 
   return (
     <div>
@@ -101,14 +109,14 @@ export const Navbar = ({ items = [] }) => {
             Łapu-Capu
           </Typography>
           {[ROLES.USER].includes(access) && (
-              <IconButton
+            <IconButton
               edge="start"
               color="inherit"
               aria-label="account"
               onClick={() => setCartOpen(!cartOpen)}
             >
               <Badge badgeContent={productsNum} color="secondary">
-              <ShoppingCart />
+                <ShoppingCart />
               </Badge>
             </IconButton>
           )}
@@ -119,12 +127,10 @@ export const Navbar = ({ items = [] }) => {
           {navList.map(({ link, text, Icon, neededAccess }) => {
             if (neededAccess.includes(access)) {
               return (
-                  <ListItem button onClick={goTo(link)}>
-                    <ListItemIcon>
-                      {Icon}
-                    </ListItemIcon>
-                    <ListItemText primary={ text } />
-                  </ListItem>
+                <ListItem button onClick={goTo(link)}>
+                  <ListItemIcon>{Icon}</ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
               );
             }
           })}

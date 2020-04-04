@@ -5,9 +5,9 @@ import { reducer as storeReducer } from "./store/reducer";
 import { reducer as ordersReducer } from "./orders/reducer";
 
 export const rootReducer = combineReducers({
-    cart: cartReducer,
-    store: storeReducer,
-    orders: ordersReducer,
+  cart: cartReducer,
+  store: storeReducer,
+  orders: ordersReducer
 });
 
 export default rootReducer;
