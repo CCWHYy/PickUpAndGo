@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PickUpAndGo.Auth;
@@ -96,12 +98,12 @@ namespace PickUpAndGo.Controllers
             }
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(UserJwtModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Login([FromBody] LoginUserModel loginModel)
+        public IActionResult Login([FromBody] LoginUserModel loginModel)
         {
             try
             {
@@ -119,6 +121,32 @@ namespace PickUpAndGo.Controllers
                 {
                     return Unauthorized();
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return InternalServerError();
+            }
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        [ProducesResponseType(typeof(UserJwtModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public IActionResult Me()
+        {
+            try
+            {
+                var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                var user = Uow.UserRepository.Find(x => x.Id == userId).FirstOrDefault();
+
+                if (user != null)
+                    return Ok(Mapper.Map<UserModel>(user));
+                else
+                    return NotFound();
             }
             catch (Exception e)
             {
