@@ -26,6 +26,7 @@ import {
   ShoppingCart,
   Menu
 } from "@material-ui/icons";
+import { CartScreen } from "./screens/Cart";
 
 const useStyles = makeStyles({
   title: {
@@ -41,6 +42,7 @@ const store = configureStore({ reducer: rootReducer });
 const App = () => {
   const classes = useStyles();
   const [drawer, setDrawer] = React.useState(false);
+  const [cartOpen, setCartOpen] = React.useState(false);
 
   return (
     <div>
@@ -61,8 +63,13 @@ const App = () => {
                 <Typography variant="h6" className={classes.title}>
                   PickUpAndGo
                 </Typography>
-                <IconButton edge="start" color="inherit" aria-label="account">
-                  <AccountCircle />
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="account"
+                  onClick={() => setCartOpen(!cartOpen)}
+                >
+                  <ShoppingCart />
                 </IconButton>
               </Toolbar>
             </AppBar>
@@ -77,12 +84,16 @@ const App = () => {
                 </ListItem>
                 <ListItem button>
                   <ListItemIcon>
-                    <ShoppingCart />
+                    <AccountCircle />
                   </ListItemIcon>
-                  <ListItemText primary="Twój koszyk" />
+                  <ListItemText primary="Twoje konto" />
                 </ListItem>
               </List>
             </Drawer>
+            <CartScreen
+              open={cartOpen}
+              handleClose={() => setCartOpen(false)}
+            />
           </BrowserRouter>
         </ThemeProvider>
       </Provider>
