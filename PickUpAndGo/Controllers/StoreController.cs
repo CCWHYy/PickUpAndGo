@@ -26,9 +26,6 @@ namespace PickUpAndGo.Controllers
         {
         }
 
-        //TODO Change positive response types from object to appropriate model!
-
-
         /// <summary>
         /// Get by ID [Working]
         /// </summary>
