@@ -63,14 +63,20 @@ namespace PickUpAndGo.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(object), 200)]
         [ProducesResponseType(500)]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string storeId)
         {
             try
             {
-                var products = Uow.ProductRepository.GetAll();
-                var productModels = products.Select(Mapper.Map<ProductModel>);
-
-                return Ok(productModels);
+                if (string.IsNullOrWhiteSpace(storeId))
+                {
+                    var products = Uow.ProductRepository.GetAll();
+                    return Ok(products.Select(Mapper.Map<ProductModel>));
+                }
+                else
+                {
+                    var products = Uow.ProductRepository.FindAll(x => x.StoreId == storeId);
+                    return Ok(products.Select(Mapper.Map<ProductModel>));
+                }
             }
             catch (Exception e)
             {
