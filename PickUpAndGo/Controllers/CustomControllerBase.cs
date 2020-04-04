@@ -41,7 +41,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public IActionResult InternalServerError(string msg = "An unexpected internal server error has occured!") =>
+        protected IActionResult InternalServerError(string msg = "An unexpected internal server error has occured!") =>
             StatusCode(500, msg);
 
         /// <summary>
@@ -50,6 +50,6 @@ namespace PickUpAndGo.Controllers
         /// <param name="model"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IActionResult Created<T>(T model) => StatusCode(201, model);
+        protected IActionResult Created<T>(T model) => StatusCode(201, model);
     }
 }

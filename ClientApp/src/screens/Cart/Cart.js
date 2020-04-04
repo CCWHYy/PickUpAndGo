@@ -69,7 +69,7 @@ export const CartScreen = ({ open, handleClose }) => {
       >
         <Fab
           aria-label="Przejdź do płatności"
-          color="primary"
+          color="secondary"
           className={classes.fab}
         >
           <CreditCard className={classes.extendedIcon} />
