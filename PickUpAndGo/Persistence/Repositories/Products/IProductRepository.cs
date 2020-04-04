@@ -6,7 +6,7 @@ using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Persistence.Repositories.Products
 {
-    interface IProductRepository : IRepository<Product>
+    public interface IProductRepository : IRepository<Product>
     {
     }
 }
