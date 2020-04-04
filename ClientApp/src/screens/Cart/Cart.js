@@ -14,7 +14,7 @@ import Fab from "@material-ui/core/Fab";
 import { CreditCard } from "@material-ui/icons";
 
 import { ItemsList } from "../../components/ItemsList";
-import { getCartItems } from "../../redux/cart/selectiors";
+import { getCartItems } from "../../redux/cart/selectors";
 
 const useStyles = makeStyles(theme => ({
   appBar: {

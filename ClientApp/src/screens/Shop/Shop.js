@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import { ItemsList } from "../../components/ItemsList";
+import { setStoreItems } from "../../redux/store/actions";
+import { getStoreItems } from "../../redux/store/selectors";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,13 +35,19 @@ const items = [
 
 export const ShopScreen = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const storeItems = useSelector(getStoreItems);
+
+    useEffect(() => {
+        dispatch(setStoreItems(items));
+    }, []);
 
     return (
         <div className={ classes.root }>
             <Typography variant="h4" component="h3" className={ classes.header }>
                 Lista produktów
             </Typography>
-            <ItemsList items={ items } />
+            <ItemsList items={ storeItems } />
         </div>
     );
 }
