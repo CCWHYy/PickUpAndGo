@@ -86,6 +86,7 @@ namespace PickUpAndGo
             // Configure jwt handler
             IJwtHandler jwtHandler = new JwtHandler(Options.Create(config.Jwt));
 
+            services.AddHttpContextAccessor();
             services.AddSingleton<IJwtHandler, JwtHandler>(x => (JwtHandler) jwtHandler);
 
             services.AddAuthentication(options =>
