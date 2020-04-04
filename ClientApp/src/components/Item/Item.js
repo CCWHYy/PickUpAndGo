@@ -18,11 +18,16 @@ const useStyles = makeStyles((theme) => ({
     inline: {
         display: 'inline',
     },
+    quantity: {
+        marginRight: 8,
+        display: 'inline',
+    },
     description: {
         display: 'flex',
         flexFlow: 'column',
     },
     buyActions: {
+        marginLeft: 32,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -30,33 +35,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const Item = ({ name, price, description }) => {
+export const Item = ({ name, price, description, quantity = null, editable = true }) => {
     const classes = useStyles();
 
     return (
         <ListItem alignItems="flex-start" className={ classes.item }>
+            {!editable && quantity && <Typography
+                component="span"
+                variant="h6"
+                className={classes.quantity}
+                color="textPrimary"
+            >
+                { quantity + "x" }
+            </Typography>}
             <ListItemText
                 primary={ name }
                 secondary={
                     <div className={ classes.description }>
-                        <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textPrimary"
-                        >
-                            { price }
-                        </Typography>
                         { description }
                     </div>
                 }
             />
-            <div className={ classes.buyActions }>
+            <Typography
+                component="span"
+                variant="body2"
+                className={classes.inline}
+                color="textPrimary"
+            >
+                { price }
+            </Typography>
+            {editable && <div className={ classes.buyActions }>
                 <Input type="number" defaultValue={ 1 } inputProps={{ min: 0, max: 99, className: classes.input }} className={ classes.quantity } />
                 <IconButton edge="end" aria-label="comments">
                     <AddIcon />
                 </IconButton>
-            </div>
+            </div>}
         </ListItem>
     );
 };
