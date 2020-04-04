@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const MainScreen = () => (
+export const ShopScreen = () => (
     <div>
         Ci co wygrają hackyeah
     </div>
 );
 
-export default MainScreen;
+export default ShopScreen;
