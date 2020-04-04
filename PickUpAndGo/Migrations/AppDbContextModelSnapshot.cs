@@ -128,9 +128,6 @@ namespace PickUpAndGo.Migrations
                     b.Property<string>("Route")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StoreChainId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("StreetNumber")
                         .HasColumnType("nvarchar(max)");
 

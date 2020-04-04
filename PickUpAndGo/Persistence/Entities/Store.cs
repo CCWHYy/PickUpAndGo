@@ -5,7 +5,6 @@ namespace PickUpAndGo.Persistence.Entities
     public class Store : BaseEntity
     {
         public string Name { get; set; }
-        public string StoreChainId { get; set; }
         public string Address { get; set; }
         public string StreetNumber { get; set; }
         public string Route { get; set; }
