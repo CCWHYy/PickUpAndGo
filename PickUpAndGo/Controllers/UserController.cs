@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PickUpAndGo.Auth;
 using PickUpAndGo.Auth.Models;
+using PickUpAndGo.Auth.PasswordEncryption;
 using PickUpAndGo.Models.User;
 using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
@@ -22,6 +23,7 @@ namespace PickUpAndGo.Controllers
     [Route("api/users")]
     public class UserController : CustomControllerBase
     {
+        private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtHandler _jwtHandler;
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace PickUpAndGo.Controllers
         public UserController(AppDbContext dbContext, IMapper mapper, IJwtHandler jwtHandler) : base(dbContext, mapper)
         {
             _jwtHandler = jwtHandler;
+            _passwordHasher = new PasswordHasher(new HashingOptions());
         }
 
         /// <summary>
@@ -42,23 +45,19 @@ namespace PickUpAndGo.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public IActionResult GetById([FromRoute, Required] string id)
         {
             try
             {
-                Console.WriteLine(id);
                 if (string.IsNullOrWhiteSpace(id))
                     return BadRequest("ID is required!");
 
                 var user = Uow.UserRepository.Get(id);
 
                 if (user != null)
-                {
-                    var res = Mapper.Map<UserModel>(user);
-                    return Ok(res);
-                }
+                    return Ok(Mapper.Map<UserModel>(user));
 
                 return NotFound("User with given ID does not exist!");
             }
@@ -70,7 +69,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Create user
+        /// Register user
         /// </summary>
         /// <param name="createUserModel"></param>
         [HttpPost]
@@ -82,10 +81,22 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                // TODO some validation before
-                var entity = Mapper.Map<User>(createUserModel);
+                if (string.IsNullOrWhiteSpace(createUserModel.Email) ||
+                    string.IsNullOrWhiteSpace(createUserModel.Password))
+                    return BadRequest();
 
-                var res = Uow.UserRepository.Add(entity);
+                var getUserRes = Uow.UserRepository.Find(x => x.Email == createUserModel.Email);
+
+                if (getUserRes != null)
+                    return Conflict("User with given email is already registered!");
+
+                var userEntity = new User
+                {
+                    Email = createUserModel.Email,
+                    Password = _passwordHasher.Hash(createUserModel.Password)
+                };
+
+                var res = Uow.UserRepository.Add(userEntity);
 
                 await Uow.CompleteAsync();
 
@@ -114,12 +125,17 @@ namespace PickUpAndGo.Controllers
 
                 if (user != null)
                 {
+                    var passCheck = _passwordHasher.Check(user.Password, loginModel.Password);
+
+                    if (!passCheck.Verified)
+                        return Unauthorized("Given email or password is incorrect!");
+
                     var jwtToken = _jwtHandler.Create(user.Id);
                     return Ok(jwtToken);
                 }
                 else
                 {
-                    return Unauthorized();
+                    return Unauthorized("Given email or password is incorrect!");
                 }
             }
             catch (Exception e)
