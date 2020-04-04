@@ -7,6 +7,7 @@ namespace PickUpAndGo.Models.Product
 {
     public class CreateProductModel
     {
+        public string StoreId { get; set; }
         public string Name { get; set; }
         public string Brand { get; set; }
         public string QuantityUnit { get; set; }
