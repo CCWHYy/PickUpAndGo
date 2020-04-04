@@ -31,12 +31,14 @@ const items = [
   {
     name: "Bułeczki",
     price: "1.90 PLN",
-    description: "przepyszne bułeczki"
+    description: "przepyszne bułeczki",
+    isAddButtonVisible: false,
   },
   {
     name: "Wódeczka",
     price: "21.90 PLN",
-    description: "przepyszna wódeczka"
+    description: "przepyszna wódeczka",
+    isAddButtonVisible: false,
   }
 ];
 

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const Item = ({ name, price, description, quantity = null, editable = true }) => {
+export const Item = ({ name, price, description, quantity = null, editable = true, isAddButtonVisible = true }) => {
     const classes = useStyles();
 
     return (
@@ -66,9 +66,9 @@ export const Item = ({ name, price, description, quantity = null, editable = tru
             </Typography>
             {editable && <div className={ classes.buyActions }>
                 <Input type="number" defaultValue={ 1 } inputProps={{ min: 0, max: 99, className: classes.input }} className={ classes.quantity } />
-                <IconButton edge="end" aria-label="comments">
+                {isAddButtonVisible && <IconButton edge="end" aria-label="comments">
                     <AddIcon />
-                </IconButton>
+                </IconButton>}
             </div>}
         </ListItem>
     );
