@@ -89,22 +89,77 @@ namespace PickUpAndGo.Controllers
                     string.IsNullOrWhiteSpace(createUserModel.Password))
                     return BadRequest();
 
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+
                 var getUserRes = Uow.UserRepository.Find(x => x.Email == createUserModel.Email);
 
                 if (getUserRes != null)
                     return Conflict("User with given email is already registered!");
 
-                var userEntity = new User
+                if (string.IsNullOrWhiteSpace(currentUserId))
                 {
-                    Email = createUserModel.Email,
-                    Password = _passwordHasher.Hash(createUserModel.Password)
-                };
+                    var userEntity = new User
+                    {
+                        Email = createUserModel.Email,
+                        Password = _passwordHasher.Hash(createUserModel.Password),
+                        Role = Roles.User
+                    };
 
-                var res = Uow.UserRepository.Add(userEntity);
+                    var res = Uow.UserRepository.Add(userEntity);
 
-                await Uow.CompleteAsync();
+                    await Uow.CompleteAsync();
 
-                return Created(Mapper.Map<UserModel>(res));
+                    return Created(Mapper.Map<UserModel>(res));
+                }
+
+                if (currentUserRole == Roles.User)
+                    return BadRequest("You are already registered!");
+
+                if (currentUserRole == Roles.Admin)
+                {
+                    if (string.IsNullOrWhiteSpace(createUserModel.Role))
+                        return BadRequest("Role is required!");
+
+                    var getStoreRes = Uow.StoreRepository.Get(createUserModel.StoreId);
+
+                    if (getStoreRes == null)
+                        return BadRequest("Store with given id does not exist.");
+
+                    var entity = new User
+                    {
+                        Email = createUserModel.Email,
+                        Password = _passwordHasher.Hash(createUserModel.Password),
+                        StoreId = createUserModel.StoreId,
+                        Role = createUserModel.Role,
+                    };
+
+                    var res = Uow.UserRepository.Add(entity);
+
+                    await Uow.CompleteAsync();
+
+                    return Created(Mapper.Map<UserModel>(res));
+                }
+
+                if (currentUserRole == Roles.Owner)
+                {
+                    var currentUser = Uow.UserRepository.Get(currentUserId);
+                    if (currentUser == null)
+                        return InternalServerError();
+
+                    var entity = new User
+                    {
+                        StoreId = currentUser.StoreId,
+                        Email = createUserModel.Email,
+                        Password = _passwordHasher.Hash(createUserModel.Password),
+                        Role = Roles.Employee
+                    };
+                    var res = Uow.UserRepository.Add(entity);
+                    await Uow.CompleteAsync();
+                    return Created(Mapper.Map<UserModel>(res));
+                }
+
+                return InternalServerError();
             }
             catch (Exception e)
             {
@@ -138,7 +193,7 @@ namespace PickUpAndGo.Controllers
                     if (!passCheck.Verified)
                         return Unauthorized("Given email or password is incorrect!");
 
-                    var jwtToken = _jwtHandler.Create(user.Id);
+                    var jwtToken = _jwtHandler.Create(user.Id, user.Role);
                     return Ok(jwtToken);
                 }
                 else
@@ -167,7 +222,6 @@ namespace PickUpAndGo.Controllers
             try
             {
                 var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-
                 var user = Uow.UserRepository.Find(x => x.Id == userId);
 
                 if (user != null)
