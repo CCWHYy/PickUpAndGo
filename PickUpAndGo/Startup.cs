@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using PickUpAndGo.Auth;
 using PickUpAndGo.Persistence.Context;
 
 namespace PickUpAndGo
@@ -55,7 +57,12 @@ namespace PickUpAndGo
 
             var mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
+            
+            // Configure jwt handler
+            IJwtHandler jwtHandler = new JwtHandler(Options.Create(config.Jwt));
 
+            services.AddSingleton<IJwtHandler, JwtHandler>(x => (JwtHandler) jwtHandler);
+            
             // Configure database
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(config.ConnectionStrings.Database));
