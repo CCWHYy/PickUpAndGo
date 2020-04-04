@@ -35,12 +35,41 @@ const useStyles = makeStyles({
   }
 });
 
+const navList = [{
+  link: '/shops',
+  Icon: <Storefront />,
+  text: 'Sklepy',
+  neededAccess: ['user']
+}, {
+  link: '/orders',
+  Icon: <AccountCircle />,
+  text: 'Twoje konto',
+  neededAccess: ['user'],
+}, {
+  link: '/admin/store/details',
+  Icon: <AccountCircle />,
+  text: 'Twój sklep',
+  neededAccess: ['admin'],
+}, {
+  link: '/admin/store/products',
+  Icon: <AccountCircle />,
+  text: 'Twoje produkty',
+  neededAccess: ['admin'],
+}, {
+  link: '/admin/store/orders',
+  Icon: <AccountCircle />,
+  text: 'Twoje zamówienia',
+  neededAccess: ['admin'],
+}, ];
+
 export const Navbar = ({ items = [] }) => {
   const classes = useStyles();
   const [drawer, setDrawer] = React.useState(false);
   const [cartOpen, setCartOpen] = React.useState(false);
   const history = useHistory();
   const cartItems = useSelector(getCartItems);
+
+  const access = 'user';
 
   const goTo = url => () => {
     history.push(url);
@@ -80,18 +109,18 @@ export const Navbar = ({ items = [] }) => {
       </AppBar>
       <Drawer open={drawer} onClose={() => setDrawer(false)}>
         <List component="nav" aria-label="main mailbox folders">
-          <ListItem button onClick={goTo("/shops")}>
-            <ListItemIcon>
-              <Storefront />
-            </ListItemIcon>
-            <ListItemText primary="Sklepy" />
-          </ListItem>
-          <ListItem button onClick={goTo("/orders")}>
-            <ListItemIcon>
-              <AccountCircle />
-            </ListItemIcon>
-            <ListItemText primary="Twoje konto" />
-          </ListItem>
+          {navList.map(({ link, text, Icon, neededAccess }) => {
+            if (neededAccess.includes(access)) {
+              return (
+                  <ListItem button onClick={goTo(link)}>
+                    <ListItemIcon>
+                      {Icon}
+                    </ListItemIcon>
+                    <ListItemText primary={ text } />
+                  </ListItem>
+              );
+            }
+          })}
         </List>
       </Drawer>
       <CartScreen open={cartOpen} handleClose={() => setCartOpen(false)} />

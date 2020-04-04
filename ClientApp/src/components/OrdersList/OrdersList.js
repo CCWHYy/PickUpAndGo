@@ -7,6 +7,8 @@ import { Order } from "../Order";
 const useStyles = makeStyles((theme) => ({
     root: {
         width: 500,
+        textAlign: 'center',
+        marginTop: 16,
     },
 }));
 
@@ -18,6 +20,7 @@ export const OrdersList = ({ orders }) => {
             {orders.map((order) => (
                 <Order {...order}/>
             ))}
+            { !orders.length && "Nie posiadasz żadnych zamówień"}
         </div>
     );
 };
