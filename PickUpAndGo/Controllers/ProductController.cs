@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,6 +89,7 @@ namespace PickUpAndGo.Controllers
         /// Add product
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(object), 201)]
         [ProducesResponseType(400)]
