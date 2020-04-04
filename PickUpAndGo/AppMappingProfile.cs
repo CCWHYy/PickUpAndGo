@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PickUpAndGo.Models.Orders;
 using PickUpAndGo.Models.Product;
 using PickUpAndGo.Models.Store;
 using PickUpAndGo.Models.User;
@@ -29,6 +30,12 @@ namespace PickUpAndGo
             CreateMap<Product, ProductModel>();
             CreateMap<CreateProductModel, Product>();
             CreateMap<UpdateProductModel, Product>();
+
+            // Order mappings
+            CreateMap<CreateOrderModel, Order>();
+            CreateMap<Order, OrderModel>();
+            CreateMap<UpdateOrderModel, Order>();
+
         }
     }
 }

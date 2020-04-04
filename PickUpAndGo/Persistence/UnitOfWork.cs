@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PickUpAndGo.Persistence.Repositories.Products;
 using PickUpAndGo.Persistence.Repositories.Stores;
+using PickUpAndGo.Persistence.Repositories.Orders;
 
 namespace PickUpAndGo.Persistence
 {
@@ -16,6 +17,7 @@ namespace PickUpAndGo.Persistence
         public IUserRepository UserRepository { get; private set; }
         public IStoreRepository StoreRepository { get; private set; }
         public IProductRepository ProductRepository { get; private set; }
+        public IOrderRepository OrderRepository { get; private set; }
 
         public UnitOfWork(AppDbContext context)
         {

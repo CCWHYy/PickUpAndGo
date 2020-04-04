@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Models.Orders;
 using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;
@@ -13,15 +15,15 @@ namespace PickUpAndGo.Controllers
     /// <summary>
     /// Product Controller [Working]
     /// </summary>
-    [Route("api/products")]
-    public class ProductController : CustomControllerBase
+    [Route("api/orders")]
+    public class OrderController : CustomControllerBase
     {
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public ProductController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public OrderController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
         }
 
@@ -38,13 +40,23 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                var product = Uow.ProductRepository.Get(id);
-                if (product == null)
-                    return NotFound("Product with given Id was not found!");
+                var order = Uow.OrderRepository.Query(p => p.Id == id, null, p => p.OrderProducts).FirstOrDefault();
+                if (order == null)
+                    return NotFound("Order with given Id was not found!");
 
-                var productModel = Mapper.Map<ProductModel>(product);
+                var productIds = order.OrderProducts.Select(x => x.ProductId).ToList();
+                var products = new List<Product>();
+                var allProducts = Uow.ProductRepository;
 
-                return Ok(productModel);
+                foreach (var productId in productIds)
+                {
+                    products.Add(allProducts.Get(productId));
+                }
+
+                var orderModel = Mapper.Map<OrderModel>(order);
+                orderModel.Products = products.Select(Mapper.Map<ProductModel>).ToList();
+
+                return Ok(orderModel);
             }
             catch (Exception e)
             {
@@ -64,10 +76,10 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                var products = Uow.ProductRepository.GetAll();
-                var productModels = products.Select(Mapper.Map<ProductModel>);
+                var order = Uow.OrderRepository.GetAll();
+                var orderModels = order.Select(Mapper.Map<OrderModel>);
 
-                return Ok(productModels);
+                return Ok(orderModels);
             }
             catch (Exception e)
             {
@@ -86,34 +98,34 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Create([FromBody] CreateProductModel createProductModel)
+        public async Task<IActionResult> Create([FromBody] CreateOrderModel createOrderModel)
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
-                    String.IsNullOrWhiteSpace(createProductModel.Brand) ||
-                    String.IsNullOrWhiteSpace(createProductModel.StoreId) ||
-                    String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
-                    String.IsNullOrWhiteSpace(createProductModel.Category))
+                if (String.IsNullOrWhiteSpace(createOrderModel.UserId) ||
+                    String.IsNullOrWhiteSpace(createOrderModel.StoreId))
                 {
                     return BadRequest("At least one of required fields are empty!");
                 }
 
-                if (createProductModel.Price <= 0)
-                    return BadRequest("Price must be greater than 0");
+                var store = Uow.StoreRepository.Get(createOrderModel.StoreId);
+                var user = Uow.UserRepository.Get(createOrderModel.UserId);
 
-                var store = Uow.StoreRepository.Get(createProductModel.StoreId);
+                if (user == null || store == null)
+                {
+                    return NotFound("Such user or store doesn't exist!");
+                }
 
-                if (store == null)
-                    return NotFound("Store with given Id was not found!");
+                /////////////////////////////////
+                ///// If products available /////
+                /////////////////////////////////
 
-                var product = Mapper.Map<Product>(createProductModel);
-                product.Quantity = 0;
+                var order = Mapper.Map<Order>(createOrderModel);
 
-                var entity = Uow.ProductRepository.Add(product);
+                var entity = Uow.OrderRepository.Add(order);
                 await Uow.CompleteAsync();
 
-                return Created(Mapper.Map<ProductModel>(entity));
+                return Created(Mapper.Map<OrderModel>(entity));
             }
             catch (Exception e)
             {
@@ -131,39 +143,35 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Update([FromBody] UpdateProductModel updateProductModel)
+        public async Task<IActionResult> Update([FromBody] UpdateOrderModel updateOrderModel)
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(updateProductModel.Name) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.Brand) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.StoreId) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.QuantityUnit) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.Category))
+                if (String.IsNullOrWhiteSpace(updateOrderModel.UserId) ||
+                    String.IsNullOrWhiteSpace(updateOrderModel.StoreId))
                 {
                     return BadRequest("At least one of required fields are empty!");
                 }
 
-                if (updateProductModel.Price <= 0)
-                    return BadRequest("Price must be greater than 0!");
+                var order = Uow.OrderRepository.Get(updateOrderModel.Id);
+                if (order == null)
+                    return NotFound("Order with given Id was not found!");
 
-                if (updateProductModel.Quantity < 0)
-                    return BadRequest("Quantity cannot be less than 0!");
+                var store = Uow.StoreRepository.Get(updateOrderModel.StoreId);
+                var user = Uow.UserRepository.Get(updateOrderModel.UserId);
 
-                var product = Uow.ProductRepository.Get(updateProductModel.Id);
-                if (product == null)
-                    return NotFound("Product with given Id was not found!");
+                if (user == null || store == null)
+                {
+                    return NotFound("Such user or store doesn't exist!");
+                }
 
-                var store = Uow.StoreRepository.Get(updateProductModel.StoreId);
-                if (store == null)
-                    return NotFound("Store with given Id was not found!");
 
-                var entity = Mapper.Map(updateProductModel, product);
-                var updatedProduct = Uow.ProductRepository.Update(entity);
+                var entity = Mapper.Map(updateOrderModel, order);
+                var updatedOrder = Uow.OrderRepository.Update(entity);
 
                 await Uow.CompleteAsync();
 
-                return Ok(Mapper.Map<ProductModel>(Mapper.Map<ProductModel>(updatedProduct)));
+                return Ok(Mapper.Map<OrderModel>(Mapper.Map<OrderModel>(updatedOrder)));
             }
             catch (Exception e)
             {
@@ -191,11 +199,11 @@ namespace PickUpAndGo.Controllers
                     return BadRequest("Id must be specified");
                 }
 
-                var product = Uow.ProductRepository.Get(id);
-                if (product == null)
+                var order = Uow.OrderRepository.Get(id);
+                if (order == null)
                     return NotFound("Product with given Id was not found!");
 
-                Uow.ProductRepository.Remove(product);
+                Uow.OrderRepository.Remove(order);
                 await Uow.CompleteAsync();
 
                 return NoContent();
