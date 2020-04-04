@@ -1,9 +1,12 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Auth;
 using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;
@@ -19,9 +22,10 @@ namespace PickUpAndGo.Controllers
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="contextAccessor"></param>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public ProductController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public ProductController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
         {
         }
 

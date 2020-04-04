@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -31,11 +32,12 @@ namespace PickUpAndGo.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="contextAccessor"></param>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="jwtHandler"></param>
-        public UserController(AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings,
-            IJwtHandler jwtHandler) : base(dbContext, mapper)
+        public UserController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings,
+            IJwtHandler jwtHandler) : base(contextAccessor, dbContext, mapper)
         {
             _appSettings = appsSettings.Value;
             _jwtHandler = jwtHandler;
