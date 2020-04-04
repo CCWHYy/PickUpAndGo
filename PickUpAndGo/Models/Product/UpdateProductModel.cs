@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PickUpAndGo.Models.Product
 {
-    public class UpdateQuantityProductModel
+    public class UpdateProductModel
     {
         public string Id { get; set; }
         public int Quantity { get; set; }

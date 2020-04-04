@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
+using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Controllers
 {
@@ -37,7 +41,10 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok();
+                var product = Uow.ProductRepository.Get(id);
+                var productModel = Mapper.Map<ProductModel>(product);
+
+                return Ok(productModel);
             }
             catch (Exception e)
             {
@@ -57,7 +64,10 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok();
+                var products = Uow.ProductRepository.GetAll();
+                var productModels = products.Select(Mapper.Map<ProductModel>);
+
+                return Ok(productModels);
             }
             catch (Exception e)
             {
@@ -76,11 +86,24 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public IActionResult Add()
+        public async Task<IActionResult> Create([FromBody] CreateProductModel createProductModel)
         {
             try
             {
-                return Ok();
+                if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
+                    createProductModel.Price <= 0 ||
+                    String.IsNullOrWhiteSpace(createProductModel.Brand) ||
+                    String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
+                    String.IsNullOrWhiteSpace(createProductModel.Category))
+                {
+                    return BadRequest("Required fields are empty!");
+                }
+
+                var product = Mapper.Map<Product>(createProductModel);
+                var entity = Uow.ProductRepository.Add(product);
+                await Uow.CompleteAsync();
+
+                return Created(Mapper.Map<ProductModel>(entity));
             }
             catch (Exception e)
             {
@@ -98,10 +121,15 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult Update()
+        public IActionResult Update([FromBody] UpdateProductModel updateProductModel)
         {
             try
             {
+                var product = Uow.ProductRepository.Get(updateProductModel.Id);
+                if (product == null)
+                    return NotFound("Product with given Id was not found!");
+
+                
                 return Ok();
             }
             catch (Exception e)
