@@ -1,45 +1,94 @@
-import { FAB, useTheme } from "react-native-paper";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import { Fab } from "../components/Fab";
+import { Header } from "../components/Header";
+import { MyList } from "../components/List";
+import { Products } from "./Products";
+import { QRScanner } from "./QRScanner";
 import React from "react";
-import { useSafeArea } from "react-native-safe-area-context";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const orderss = [
   {
     id: "1",
     number: "32321",
     products: ["mleko", "miód", "wódeczka", "chlebek"],
+    date: "12.12.2019 14:32",
+  },
+  {
+    id: "2",
+    number: "30985",
+    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    date: "12.12.2019 14:32",
+  },
+  {
+    id: "3",
+    number: "74628",
+    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    date: "12.12.2019 14:32",
+  },
+  {
+    id: "4",
+    number: "5934u953",
+    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    date: "12.12.2019 14:32",
   },
 ];
 
-const Orders = (props) => {
-  const insets = useSafeArea();
+const TakeOrdersScreen = (props) => {
   const { navigation } = props;
-  const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <Text>Orders</Text>
-      <FAB
-        icon="camera"
-        onPress={() => navigation.navigate("QRScanner")}
-        style={{
-          position: "absolute",
-          bottom: 50,
-          right: 16,
-          backgroundColor: colors.primary,
-        }}
-      />
+      <View style={styles.listContainer}>
+        <MyList items={orderss} />
+      </View>
+      <Fab onPress={() => navigation.navigate("QRScanner")} />
     </View>
   );
 };
 
+const Stack = createStackNavigator();
+
+const TakeOrdersStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Orders"
+      headerMode="screen"
+      screenOptions={{
+        header: ({ scene, navigation, previous }) => (
+          <Header scene={scene} previous={previous} navigation={navigation} />
+        ),
+      }}
+    >
+      <Stack.Screen
+        name="Order"
+        component={TakeOrdersScreen}
+        options={{ headerTitle: "Do wzięcia" }}
+      />
+      <Stack.Screen
+        name="Products"
+        component={Products}
+        options={{ headerTitle: "Produkty" }}
+      />
+      <Stack.Screen
+        name="QRScanner"
+        component={QRScanner}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "flex-start",
     alignItems: "center",
-    justifyContent: "center",
+  },
+  listContainer: {
+    top: 30,
+    width: "100%",
   },
 });
 
-export { Orders };
+export { TakeOrdersStack };

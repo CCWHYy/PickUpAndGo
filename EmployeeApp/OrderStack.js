@@ -1,5 +1,3 @@
-import { Appbar, Avatar, useTheme } from "react-native-paper";
-
 import { ArchiveOrders } from "./screens/ArchiveOrders";
 import { Header } from "./components/Header";
 import { Orders } from "./screens/Orders";
