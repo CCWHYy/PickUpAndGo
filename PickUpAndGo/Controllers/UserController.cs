@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PickUpAndGo.Models;
+using PickUpAndGo.Models.User;
 using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using PickUpAndGo.Models;
+using PickUpAndGo.Models.User;
 using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo
