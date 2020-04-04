@@ -10,10 +10,9 @@ namespace PickUpAndGo.Persistence.Context
         public DbSet<Store> Stores { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<StoreOrder> StoreOrders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
-        public DbSet<EmployeeStore> EmployeeStores { get; set; }
+        public DbSet<UserStore> UserStores { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -26,10 +25,9 @@ namespace PickUpAndGo.Persistence.Context
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
             modelBuilder.ApplyConfiguration(new StoreOrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderProductConfiguration());
-            modelBuilder.ApplyConfiguration(new EmployeeStoreConfiguration());
+            modelBuilder.ApplyConfiguration(new UserStoreConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
