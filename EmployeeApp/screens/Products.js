@@ -31,7 +31,7 @@ const Products = ({ route }) => {
             width: "40%",
             marginTop: 50,
             height: 50,
-            justifyContent: "center",
+            justifyContent: "center"
           }}
           color={colors.primary.main}
           onPress={() => setOrderTaken(true)}
@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "center"
   },
   listContainer: {
-    width: "100%",
-  },
+    width: "100%"
+  }
 });

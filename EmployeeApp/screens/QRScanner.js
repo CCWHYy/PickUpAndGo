@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Feather } from "@expo/vector-icons";
 
-const QRScanner = (props) => {
+const QRScanner = props => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -46,7 +46,7 @@ const QRScanner = (props) => {
           <View
             style={{
               alignSelf: "flex-start",
-              marginLeft: 20,
+              marginLeft: 20
             }}
           >
             <Feather
@@ -75,32 +75,32 @@ const styles = StyleSheet.create({
     borderColor: "white",
     width: "100%",
     height: "100%",
-    flex: 3,
+    flex: 3
   },
   middleRowColumn: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)" },
   text: {
     textAlign: "center",
     color: "white",
-    fontSize: 24,
+    fontSize: 24
   },
   absoluteFillObject: {
     position: "absolute",
     left: 0,
     top: 0,
     right: 0,
-    bottom: 0,
+    bottom: 0
   },
   middleRow: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "row"
   },
   topAndDownRow: {
     backgroundColor: "rgba(0,0,0,0.7)",
     flex: 1,
     justifyContent: "space-evenly",
     alignItems: "center",
-    borderColor: "white",
-  },
+    borderColor: "white"
+  }
 });
 
 export { QRScanner };

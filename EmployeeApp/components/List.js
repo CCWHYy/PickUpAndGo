@@ -8,7 +8,7 @@ const MyList = ({ items, justWatch }) => {
   const navigation = useNavigation();
   return (
     <List.Section>
-      {items.map((item) => {
+      {items.map(item => {
         const productsString =
           item.products.length === 1
             ? "produkt"
@@ -21,7 +21,7 @@ const MyList = ({ items, justWatch }) => {
             title={item.number}
             style={{
               justifyContent: "center",
-              alignItems: "center",
+              alignItems: "center"
             }}
             description={item.date}
             right={() => (
@@ -29,12 +29,12 @@ const MyList = ({ items, justWatch }) => {
                 style={{
                   marginRight: 30,
                   justifyContent: "center",
-                  alignItems: "center",
+                  alignItems: "center"
                 }}
               >
                 <Text
                   style={{
-                    color: "red",
+                    color: "red"
                   }}
                 >
                   {`${item.products.length} ${productsString}`}
@@ -44,7 +44,7 @@ const MyList = ({ items, justWatch }) => {
             onPress={() =>
               navigation.navigate("Products", {
                 items: item.products,
-                justWatch,
+                justWatch
               })
             }
           />

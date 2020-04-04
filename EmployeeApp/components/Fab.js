@@ -13,7 +13,7 @@ const Fab = ({ onPress }) => {
         position: "absolute",
         bottom: 50,
         right: 16,
-        backgroundColor: colors.primary.main,
+        backgroundColor: colors.primary.main
       }}
     />
   );
