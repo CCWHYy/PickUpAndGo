@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickUpAndGo.Models.Orders;
 using PickUpAndGo.Models.Product;
@@ -23,7 +24,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public OrderController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public OrderController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
         {
         }
 
