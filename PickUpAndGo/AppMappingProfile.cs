@@ -22,6 +22,7 @@ namespace PickUpAndGo
             // Store mappings
             CreateMap<CreateStoreModel, Store>();
             CreateMap<Store, StoreModel>();
+            CreateMap<UpdateStoreModel, Store>();
         }
     }
 }
