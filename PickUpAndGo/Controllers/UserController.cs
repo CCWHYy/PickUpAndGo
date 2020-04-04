@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PickUpAndGo.Auth;
+using PickUpAndGo.Auth.Models;
 using PickUpAndGo.Models.User;
 using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
@@ -17,13 +20,16 @@ namespace PickUpAndGo.Controllers
     [Route("api/users")]
     public class UserController : CustomControllerBase
     {
+        private readonly IJwtHandler _jwtHandler;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public UserController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public UserController(AppDbContext dbContext, IMapper mapper, IJwtHandler jwtHandler) : base(dbContext, mapper)
         {
+            _jwtHandler = jwtHandler;
         }
 
         /// <summary>
@@ -77,11 +83,42 @@ namespace PickUpAndGo.Controllers
                 // TODO some validation before
                 var entity = Mapper.Map<User>(createUserModel);
 
-                Uow.UserRepository.Add(entity);
+                var res = Uow.UserRepository.Add(entity);
 
-                var createResponse = await Uow.CompleteAsync();
+                await Uow.CompleteAsync();
 
-                return Created(entity);
+                return Created(Mapper.Map<UserModel>(res));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return InternalServerError();
+            }
+        }
+
+        [HttpPost("Login")]
+        [ProducesResponseType(typeof(UserJwtModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Login([FromBody] LoginUserModel loginModel)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(loginModel.Email))
+                    return BadRequest();
+
+                var user = Uow.UserRepository.Find(x => x.Email == loginModel.Email).FirstOrDefault();
+
+                if (user != null)
+                {
+                    var jwtToken = _jwtHandler.Create(user.Id);
+                    return Ok(jwtToken);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
             catch (Exception e)
             {
