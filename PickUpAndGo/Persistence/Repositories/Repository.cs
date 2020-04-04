@@ -27,7 +27,12 @@ namespace PickUpAndGo.Persistence.Repositories
             return BaseContext.Set<TEntity>().ToList();
         }
 
-        public ICollection<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        public TEntity Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return BaseContext.Set<TEntity>().Where(predicate).FirstOrDefault();
+        }
+
+        public ICollection<TEntity> FindAll(Expression<Func<TEntity, bool>> predicate)
         {
             return BaseContext.Set<TEntity>().Where(predicate).ToList();
         }

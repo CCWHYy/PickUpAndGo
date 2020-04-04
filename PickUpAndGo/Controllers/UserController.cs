@@ -110,7 +110,7 @@ namespace PickUpAndGo.Controllers
                 if (string.IsNullOrWhiteSpace(loginModel.Email))
                     return BadRequest();
 
-                var user = Uow.UserRepository.Find(x => x.Email == loginModel.Email).FirstOrDefault();
+                var user = Uow.UserRepository.Find(x => x.Email == loginModel.Email);
 
                 if (user != null)
                 {
@@ -141,7 +141,7 @@ namespace PickUpAndGo.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                var user = Uow.UserRepository.Find(x => x.Id == userId).FirstOrDefault();
+                var user = Uow.UserRepository.Find(x => x.Id == userId);
 
                 if (user != null)
                     return Ok(Mapper.Map<UserModel>(user));
