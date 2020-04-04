@@ -17,8 +17,6 @@ namespace PickUpAndGo.Controllers
     [Route("api/users")]
     public class UserController : CustomControllerBase
     {
-        private UnitOfWork uow;
-
         /// <summary>
         /// 
         /// </summary>
@@ -26,7 +24,6 @@ namespace PickUpAndGo.Controllers
         /// <param name="mapper"></param>
         public UserController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
-            uow = new UnitOfWork(dbContext);
         }
 
         /// <summary>
@@ -47,7 +44,7 @@ namespace PickUpAndGo.Controllers
                 if (string.IsNullOrWhiteSpace(id))
                     return BadRequest("ID is required!");
 
-                var user = uow.UserRepository.Get(id);
+                var user = Uow.UserRepository.Get(id);
 
                 if (user != null)
                 {
@@ -80,9 +77,9 @@ namespace PickUpAndGo.Controllers
                 // TODO some validation before
                 var entity = Mapper.Map<User>(createUserModel);
 
-                uow.UserRepository.Add(entity);
+                Uow.UserRepository.Add(entity);
 
-                var createResponse = await uow.CompleteAsync();
+                var createResponse = await Uow.CompleteAsync();
 
                 return Created(entity);
             }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
 
 namespace PickUpAndGo.Controllers
@@ -20,6 +21,11 @@ namespace PickUpAndGo.Controllers
         protected AppDbContext DbContext { get; set; }
 
         /// <summary>
+        /// Unit of Work property provides access to repositories
+        /// </summary>
+        protected IUnitOfWork Uow { get; private set; }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="mapper"></param>
@@ -27,6 +33,7 @@ namespace PickUpAndGo.Controllers
         {
             DbContext = dbContext;
             Mapper = mapper;
+            Uow = new UnitOfWork(dbContext);
         }
 
         /// <summary>

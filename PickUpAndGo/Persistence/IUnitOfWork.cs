@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PickUpAndGo.Persistence
 {
-    interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         IUserRepository UserRepository { get; }
         Task<int> CompleteAsync();
