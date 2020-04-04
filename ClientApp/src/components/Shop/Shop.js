@@ -13,7 +13,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 345,
+        margin: 8,
+        width: 284,
     },
     media: {
         height: 0,
