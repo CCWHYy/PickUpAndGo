@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace PickUpAndGo.Persistence.Entities
+namespace PickUpAndGo.Models.Store
 {
-    public class Store : BaseEntity
+    public class StoreModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string StreetNumber { get; set; }
@@ -13,9 +14,5 @@ namespace PickUpAndGo.Persistence.Entities
         public string PostalCode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-
-        public ICollection<Product> Products { get; set; }
-        public ICollection<StoreOrder> StoreOrders { get; set; }
-        public ICollection<UserStore> UserStores { get; set; }
     }
 }
