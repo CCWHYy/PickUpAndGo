@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Caption,
-  Drawer,
-  Title,
-  withTheme,
-} from "react-native-paper";
+import { Avatar, Badge, Caption, Drawer, Title } from "react-native-paper";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -13,7 +6,6 @@ import { StyleSheet, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 const DrawerContent = ({ navigation }) => {
-  const [isNew, setIsNew] = useState(true);
   return (
     <DrawerContentScrollView>
       <View style={styles.drawerContent}>
@@ -33,17 +25,14 @@ const DrawerContent = ({ navigation }) => {
             icon={({ color, size }) => (
               <View style={styles.iconContainer}>
                 <Feather name="inbox" color={color} size={size} />
-                {isNew && (
-                  <Badge style={styles.badge} size={16}>
-                    3
-                  </Badge>
-                )}
+                <Badge style={styles.badge} size={16}>
+                  3
+                </Badge>
               </View>
             )}
             label="Do wzięcia"
             onPress={() => {
-              navigation.closeDrawer();
-              navigation.navigate("Order");
+              navigation.navigate("TakeOrdersStack");
             }}
           />
           <DrawerItem
@@ -57,7 +46,7 @@ const DrawerContent = ({ navigation }) => {
             )}
             label="Gotowe"
             onPress={() => {
-              navigation.navigate("ReadyOrders");
+              navigation.navigate("ReadyOrdersStack");
             }}
           />
           <DrawerItem
@@ -71,7 +60,7 @@ const DrawerContent = ({ navigation }) => {
             )}
             label="Archiwum"
             onPress={() => {
-              navigation.navigate("ArchiveOrders");
+              navigation.navigate("ArchiveOrdersStack");
             }}
           />
         </Drawer.Section>
