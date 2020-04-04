@@ -15,7 +15,7 @@ const ProductItem = ({ product, orderTaken }) => {
         height: 60,
         marginTop: 10,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center"
       }}
       right={
         orderTaken
@@ -28,7 +28,7 @@ const ProductItem = ({ product, orderTaken }) => {
                   borderRadius: "1500",
                   alignItems: "center",
                   height: 40,
-                  width: 40,
+                  width: 40
                 }}
               >
                 <Checkbox

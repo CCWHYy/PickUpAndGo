@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
+using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Controllers
 {
@@ -37,7 +41,13 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok();
+                var product = Uow.ProductRepository.Get(id);
+                if (product == null)
+                    return NotFound("Product with given Id was not found!");
+
+                var productModel = Mapper.Map<ProductModel>(product);
+
+                return Ok(productModel);
             }
             catch (Exception e)
             {
@@ -57,7 +67,10 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok();
+                var products = Uow.ProductRepository.GetAll();
+                var productModels = products.Select(Mapper.Map<ProductModel>);
+
+                return Ok(productModels);
             }
             catch (Exception e)
             {
@@ -76,11 +89,34 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public IActionResult Add()
+        public async Task<IActionResult> Create([FromBody] CreateProductModel createProductModel)
         {
             try
             {
-                return Ok();
+                if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
+                    String.IsNullOrWhiteSpace(createProductModel.Brand) ||
+                    String.IsNullOrWhiteSpace(createProductModel.StoreId) ||
+                    String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
+                    String.IsNullOrWhiteSpace(createProductModel.Category))
+                {
+                    return BadRequest("At least one of required fields are empty!");
+                }
+
+                if (createProductModel.Price <= 0)
+                    return BadRequest("Price must be greater than 0");
+
+                var store = Uow.StoreRepository.Get(createProductModel.StoreId);
+
+                if (store == null)
+                    return NotFound("Store with given Id was not found!");
+
+                var product = Mapper.Map<Product>(createProductModel);
+                product.Quantity = 0;
+
+                var entity = Uow.ProductRepository.Add(product);
+                await Uow.CompleteAsync();
+
+                return Created(Mapper.Map<ProductModel>(entity));
             }
             catch (Exception e)
             {
@@ -98,11 +134,39 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult Update()
+        public async Task<IActionResult> Update([FromBody] UpdateProductModel updateProductModel)
         {
             try
             {
-                return Ok();
+                if (String.IsNullOrWhiteSpace(updateProductModel.Name) ||
+                    String.IsNullOrWhiteSpace(updateProductModel.Brand) ||
+                    String.IsNullOrWhiteSpace(updateProductModel.StoreId) ||
+                    String.IsNullOrWhiteSpace(updateProductModel.QuantityUnit) ||
+                    String.IsNullOrWhiteSpace(updateProductModel.Category))
+                {
+                    return BadRequest("At least one of required fields are empty!");
+                }
+
+                if (updateProductModel.Price <= 0)
+                    return BadRequest("Price must be greater than 0!");
+
+                if (updateProductModel.Quantity < 0)
+                    return BadRequest("Quantity cannot be less than 0!");
+
+                var product = Uow.ProductRepository.Get(updateProductModel.Id);
+                if (product == null)
+                    return NotFound("Product with given Id was not found!");
+
+                var store = Uow.StoreRepository.Get(updateProductModel.StoreId);
+                if (store == null)
+                    return NotFound("Store with given Id was not found!");
+
+                var entity = Mapper.Map(updateProductModel, product);
+                var updatedProduct = Uow.ProductRepository.Update(entity);
+
+                await Uow.CompleteAsync();
+
+                return Ok(Mapper.Map<ProductModel>(Mapper.Map<ProductModel>(updatedProduct)));
             }
             catch (Exception e)
             {
@@ -121,10 +185,22 @@ namespace PickUpAndGo.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult Delete([FromRoute, Required] string id)
+        public async Task<IActionResult> Delete([FromRoute, Required] string id)
         {
             try
             {
+                if (String.IsNullOrWhiteSpace(id))
+                {
+                    return BadRequest("Id must be specified");
+                }
+
+                var product = Uow.ProductRepository.Get(id);
+                if (product == null)
+                    return NotFound("Product with given Id was not found!");
+
+                Uow.ProductRepository.Remove(product);
+                await Uow.CompleteAsync();
+
                 return NoContent();
             }
             catch (Exception e)

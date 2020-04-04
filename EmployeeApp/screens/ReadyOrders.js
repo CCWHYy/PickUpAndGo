@@ -11,23 +11,23 @@ const orderss = [
   {
     id: "1",
     number: "32321",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "2",
     number: "30985",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "3",
     number: "74628",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "4",
     number: "5934u953",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-  },
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
+  }
 ];
 const Stack = createStackNavigator();
 
@@ -39,7 +39,7 @@ const ReadyOrdersStack = () => {
       screenOptions={{
         header: ({ scene, navigation }) => (
           <Header scene={scene} navigation={navigation} />
-        ),
+        )
       }}
     >
       <Stack.Screen
@@ -56,7 +56,7 @@ const ReadyOrdersStack = () => {
   );
 };
 
-const ReadyOrders = (props) => {
+const ReadyOrders = props => {
   const { navigation } = props;
   return (
     <View style={styles.container}>
@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "flex-start"
   },
   listContainer: {
     top: 30,
-    width: "100%",
-  },
+    width: "100%"
+  }
 });
 
 export { ReadyOrdersStack };

@@ -29,7 +29,7 @@ const Header = ({ scene, previous, navigation }) => {
             size={40}
             source={{
               uri:
-                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png",
+                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png"
             }}
           />
         </TouchableOpacity>
