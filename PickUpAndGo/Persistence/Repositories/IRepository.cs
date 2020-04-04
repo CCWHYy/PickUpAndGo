@@ -8,10 +8,9 @@ namespace PickUpAndGo.Persistence.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
+        TEntity Add(TEntity entity);
         TEntity Get(string id);
-        ICollection<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         ICollection<TEntity> GetAll();
-        void Add(TEntity entity);
         void Remove(TEntity entity);
     }
 }
