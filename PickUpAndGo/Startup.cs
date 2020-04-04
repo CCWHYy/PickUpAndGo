@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,18 @@ namespace PickUpAndGo
 
             services.AddSingleton<IJwtHandler, JwtHandler>(x => (JwtHandler) jwtHandler);
             
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = jwtHandler.Parameters;
+                options.Validate();
+            });
+            
             // Configure database
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(config.ConnectionStrings.Database));
@@ -86,7 +99,7 @@ namespace PickUpAndGo
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
