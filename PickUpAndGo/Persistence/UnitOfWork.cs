@@ -15,7 +15,6 @@ namespace PickUpAndGo.Persistence
 
         public IUserRepository UserRepository { get; private set; }
         public IStoreRepository StoreRepository { get; private set; }
-
         public IProductRepository ProductRepository { get; private set; }
 
         public UnitOfWork(AppDbContext context)

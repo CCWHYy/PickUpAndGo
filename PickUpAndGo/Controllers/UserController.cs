@@ -34,7 +34,8 @@ namespace PickUpAndGo.Controllers
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="jwtHandler"></param>
-        public UserController(AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings, IJwtHandler jwtHandler) : base(dbContext, mapper)
+        public UserController(AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings,
+            IJwtHandler jwtHandler) : base(dbContext, mapper)
         {
             _appSettings = appsSettings.Value;
             _jwtHandler = jwtHandler;
@@ -42,10 +43,9 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get user by ID
+        /// Get user by ID [Working]
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(400)]
@@ -73,7 +73,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Register user
+        /// Register user [Working]
         /// </summary>
         /// <param name="createUserModel"></param>
         [HttpPost]
@@ -113,6 +113,10 @@ namespace PickUpAndGo.Controllers
             }
         }
 
+        /// <summary>
+        /// Login [Working]
+        /// </summary>
+        /// <param name="loginModel"></param>
         [HttpPost("login")]
         [ProducesResponseType(typeof(UserJwtModel), 200)]
         [ProducesResponseType(400)]
@@ -149,6 +153,9 @@ namespace PickUpAndGo.Controllers
             }
         }
 
+        /// <summary>
+        /// Get current user details [Working]
+        /// </summary>
         [Authorize]
         [HttpGet("me")]
         [ProducesResponseType(typeof(UserJwtModel), 200)]
@@ -176,9 +183,8 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get current environment
+        /// Get current environment [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpGet("env")]
         public IActionResult Env()
         {
