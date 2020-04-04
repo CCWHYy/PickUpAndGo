@@ -5,6 +5,7 @@ namespace PickUpAndGo.Persistence.Entities
     public class Order : BaseEntity
     {
         public string UserId { get; set; }
+        public string StoreId { get; set; }
         public string State { get; set; }
 
         public User User { get; set; }
