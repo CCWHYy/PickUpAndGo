@@ -9,8 +9,9 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 
-import { ItemsList } from "../ItemsList";
+import { OrderItem } from "../Item";
 import { QRModal } from "../QRMoral";
+import { ItemsList } from "../ItemsList";
 
 const useStyles = makeStyles((theme) => ({
     heading: {
@@ -83,7 +84,7 @@ export const Order = ({ storeName, orderStatus, orderDate, orderPrice, items, qr
                 <Typography variant="h6" component="h6">
                     Lista zakupów
                 </Typography>
-                <ItemsList items={ items } />
+                <ItemsList items={ items } ItemComponent={ OrderItem } />
             </ExpansionPanelDetails>
             <QRModal qrUrl={ qrCode } open={ isQROpen } onClose={ closeQRModal } />
         </ExpansionPanel>

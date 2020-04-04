@@ -20,53 +20,19 @@ const useStyles = makeStyles((theme) => ({
     inline: {
         display: 'inline',
     },
-    quantity: {
-        marginRight: 8,
-        display: 'inline',
-    },
     description: {
         display: 'flex',
         flexFlow: 'column',
     },
-    buyActions: {
-        marginLeft: 32,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 8,
-    },
 }));
 
-export const Item = (rest, quantity = null, editable = true, isAddButtonVisible = true) => {
-    const { name, price, description, id } = rest;
-    const [details, makeDetails] = useState({});
-    useEffect(() => {
-        makeDetails({ name, price, description, id, quantity: rest.quantity || 1 });
-    }, []);
+export const Item = ({ ContentBefore = null, ContentAfter = null, ...rest }) => {
+    const { name, price, description } = rest;
     const classes = useStyles();
-    const dispatch = useDispatch();
-
-    const addItemsToCart = () => {
-        dispatch(addItemToCart(details));
-    };
-
-    const updateQuantity = (q) => {
-        makeDetails({
-            ...details,
-            quantity: Number(q.target.value),
-        })
-    };
 
     return (
         <ListItem alignItems="flex-start" className={ classes.item }>
-            {!editable && quantity && <Typography
-                component="span"
-                variant="h6"
-                className={classes.quantity}
-                color="textPrimary"
-            >
-                { quantity + "x" }
-            </Typography>}
+            {ContentBefore}
             <ListItemText
                 primary={ name }
                 secondary={
@@ -83,23 +49,7 @@ export const Item = (rest, quantity = null, editable = true, isAddButtonVisible 
             >
                 { price }
             </Typography>
-            {editable && <div className={ classes.buyActions }>
-                <Input
-                    type="number"
-                    value={ details.quantity }
-                    inputProps={{ min: 0, max: 99, className: classes.input }}
-                    className={ classes.quantity }
-                    onChange={ updateQuantity }
-                />
-                {isAddButtonVisible &&
-                <IconButton
-                    edge="end"
-                    aria-label="comments"
-                    onClick={ addItemsToCart }
-                >
-                    <AddIcon />
-                </IconButton>}
-            </div>}
+            {ContentAfter}
         </ListItem>
     );
 };

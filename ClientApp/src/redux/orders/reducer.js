@@ -1,35 +1,28 @@
 import {
-    SET_STORE_ITEMS,
-    SET_STORES_LIST,
-    SET_DETAILS,
+    SET_ORDERS,
+    MAKE_ORDER,
 } from "./types";
 
 const initialState = {
     items: [],
-    storesList: [],
-    details: {},
 };
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_STORE_ITEMS:
+        case SET_ORDERS:
             return {
                 ...state,
                 items: [
                     ...action.payload,
                 ],
             };
-        case SET_STORES_LIST:
+        case MAKE_ORDER:
             return {
                 ...state,
-                storesList: [
-                    ...action.payload,
+                items: [
+                    ...state.items,
+                    action.payload,
                 ],
-            };
-        case SET_DETAILS:
-            return {
-                ...state,
-                details: action.payload,
             };
         default:
             return state;

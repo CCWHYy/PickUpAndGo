@@ -1,5 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,7 +15,10 @@ import Fab from "@material-ui/core/Fab";
 import { CreditCard } from "@material-ui/icons";
 
 import { ItemsList } from "../../components/ItemsList";
+import { CartItem } from "../../components/Item";
 import { getCartItems } from "../../redux/cart/selectors";
+import { getDetails } from "../../redux/store/selectors";
+import { makeOrder } from "../../redux/orders/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -37,7 +41,27 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export const CartScreen = ({ open, handleClose }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const items = useSelector(getCartItems);
+  const storeDetails = useSelector(getDetails);
+
+  const handleMakeOrder = () => {
+    const order = {
+      store: storeDetails,
+      storeName: storeDetails.name,
+      orderStatus: 'W trakcie realizacji',
+      orderDate: '03.04.2020',
+      orderPrice: '58.80 PLN',
+      items,
+      qrCode: '/shopLogos/zabka.jpeg',
+    };
+
+    dispatch(makeOrder(order));
+
+    history.push('/orders');
+    handleClose();
+  };
 
   return (
     <Dialog
@@ -61,7 +85,7 @@ export const CartScreen = ({ open, handleClose }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <ItemsList items={items} />
+      <ItemsList items={items} ItemComponent={CartItem} />
       <Tooltip
         title="Przejdź do płatności"
         aria-label="Przejdź do płatności"
@@ -71,6 +95,7 @@ export const CartScreen = ({ open, handleClose }) => {
           aria-label="Przejdź do płatności"
           color="secondary"
           className={classes.fab}
+          onClick={ handleMakeOrder }
         >
           <CreditCard className={classes.extendedIcon} />
         </Fab>

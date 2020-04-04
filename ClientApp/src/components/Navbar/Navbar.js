@@ -40,6 +40,7 @@ export const Navbar = ({ items = [] }) => {
 
   const goTo = url => () => {
     history.push(url);
+    setDrawer(false);
   };
 
   return (

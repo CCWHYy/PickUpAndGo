@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const shops = [
+const mockedShops = [
     {
         name: 'Żabka',
         location: 'Rynek 16',
@@ -56,7 +56,7 @@ export const ShopsListScreen = () => {
     const shopsList = useSelector(getStoresList);
 
     useEffect(() => {
-        dispatch(setStoresList(shops))
+        dispatch(setStoresList(mockedShops))
     }, []);
 
     return (
