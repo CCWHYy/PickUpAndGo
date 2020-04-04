@@ -9,36 +9,36 @@ namespace PickUpAndGo.Persistence.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly DbContext Context;
+        protected readonly DbContext ForGenericsOnlyContext;
 
         public Repository(DbContext context)
         {
-            Context = context;
+            ForGenericsOnlyContext = context;
         }
 
         public void Add(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            ForGenericsOnlyContext.Set<TEntity>().Add(entity);
         }
 
         public ICollection<TEntity> GetAll()
         {
-            return Context.Set<TEntity>().ToList();
+            return ForGenericsOnlyContext.Set<TEntity>().ToList();
         }
 
         public ICollection<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate).ToList();
+            return ForGenericsOnlyContext.Set<TEntity>().Where(predicate).ToList();
         }
 
         public TEntity Get(string id)
         {
-            return Context.Set<TEntity>().Find(id);
+            return ForGenericsOnlyContext.Set<TEntity>().Find(id);
         }
 
         public void Remove(TEntity entity)
         {
-            Context.Set<TEntity>().Remove(entity);
+            ForGenericsOnlyContext.Set<TEntity>().Remove(entity);
         }
     }
 }
