@@ -17,6 +17,6 @@ namespace PickUpAndGo.Persistence.Entities
 
         public ICollection<Product> Products { get; set; }
         public ICollection<StoreOrder> StoreOrders { get; set; }
-        public ICollection<EmployeeStore> EmployeeStores { get; set; }
+        public ICollection<UserStore> UserStores { get; set; }
     }
 }

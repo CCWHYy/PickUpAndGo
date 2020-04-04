@@ -9,6 +9,7 @@ namespace PickUpAndGo.Persistence.Entities
         public string Password { get; set; }
         public string Salt { get; set; }
 
+        public ICollection<UserStore> UserStores { get; set; }
         public ICollection<Order> Orders { get; set; }
     }
 } 

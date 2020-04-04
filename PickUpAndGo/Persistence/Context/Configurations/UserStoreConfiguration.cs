@@ -4,19 +4,19 @@ using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Persistence.Context.Configurations
 {
-    public class EmployeeStoreConfiguration : IEntityTypeConfiguration<EmployeeStore>
+    public class UserStoreConfiguration : IEntityTypeConfiguration<UserStore>
     {
-        public void Configure(EntityTypeBuilder<EmployeeStore> builder)
+        public void Configure(EntityTypeBuilder<UserStore> builder)
         {
-            builder.HasKey(x => new {x.EmployeeId, x.StoreId});
+            builder.HasKey(x => new { x.UserId, x.StoreId });
 
-            builder.HasOne<Employee>(x => x.Employee)
-                .WithMany(s => s.EmployeeStores)
-                .HasForeignKey(f => f.EmployeeId)
+            builder.HasOne<User>(x => x.User)
+                .WithMany(s => s.UserStores)
+                .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Store>(x => x.Store)
-                .WithMany(s => s.EmployeeStores)
+                .WithMany(s => s.UserStores)
                 .HasForeignKey(f => f.StoreId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
