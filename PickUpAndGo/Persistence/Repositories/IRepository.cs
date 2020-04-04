@@ -11,7 +11,7 @@ namespace PickUpAndGo.Persistence.Repositories
         TEntity Get(string id);
         ICollection<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         ICollection<TEntity> GetAll();
-        void Add(TEntity entity);
+        TEntity Add(TEntity entity);
         void Remove(TEntity entity);
     }
 }

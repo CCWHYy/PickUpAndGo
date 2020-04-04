@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace PickUpAndGo.Persistence.Repositories
 {
@@ -16,9 +17,9 @@ namespace PickUpAndGo.Persistence.Repositories
             BaseContext = context;
         }
 
-        public void Add(TEntity entity)
+        public TEntity Add(TEntity entity)
         {
-            BaseContext.Set<TEntity>().Add(entity);
+            return BaseContext.Set<TEntity>().Add(entity).Entity;
         }
 
         public ICollection<TEntity> GetAll()
