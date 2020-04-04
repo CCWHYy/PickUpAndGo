@@ -22,6 +22,31 @@ namespace PickUpAndGo.Persistence.Repositories
             return BaseContext.Set<TEntity>().Add(entity).Entity;
         }
 
+        public TEntity Update(TEntity item)
+        {
+            var result = BaseContext.Set<TEntity>().Attach(item);
+            BaseContext.Entry(item).State = EntityState.Modified;
+            return result.Entity;
+        }
+
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = BaseContext.Set<TEntity>();
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            return query;
+        }
+
         public ICollection<TEntity> GetAll()
         {
             return BaseContext.Set<TEntity>().ToList();
