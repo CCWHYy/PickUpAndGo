@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import { Item } from "./Item";
-import {addItemToCart} from "../../redux/cart/actions";
+import {removeItemFromCart} from "../../redux/cart/actions";
 import {useDispatch} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,16 +24,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const CartItem = (props) => {
-    const [details, makeDetails] = useState({});
-    const dispatch = useDispatch();
     const { name, price, description, id } = props;
+
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const [details, makeDetails] = useState({});
 
     useEffect(() => {
         makeDetails({ name, price, description, id, quantity: props.quantity || 1 });
     }, []);
 
-    const addItemsToCart = () => {
-        dispatch(addItemToCart(details));
+    const removeItem = () => {
+        dispatch(removeItemFromCart(details));
     };
 
     const updateQuantity = (q) => {
@@ -43,7 +45,6 @@ export const CartItem = (props) => {
         })
     };
 
-    const classes = useStyles();
     return (
         <Item
             ContentAfter={(
@@ -58,7 +59,7 @@ export const CartItem = (props) => {
                     <IconButton
                         edge="end"
                         aria-label="comments"
-                        onClick={ addItemsToCart }
+                        onClick={ removeItem }
                     >
                         <DeleteIcon />
                     </IconButton>
