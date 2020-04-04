@@ -10,8 +10,9 @@ namespace PickUpAndGo.Persistence.Repositories.Users
     public class UserRepository : Repository<User>, IUserRepository
     {
         private AppDbContext Context => BaseContext as AppDbContext;
+
         public UserRepository(AppDbContext context) : base(context)
         {
-        }   
+        }
     }
 }
