@@ -19,6 +19,7 @@ import { CartItem } from "../../components/Item";
 import { getCartItems } from "../../redux/cart/selectors";
 import { getDetails } from "../../redux/store/selectors";
 import { makeOrder } from "../../redux/orders/actions";
+import { setCartItems } from "../../redux/cart/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -58,6 +59,7 @@ export const CartScreen = ({ open, handleClose }) => {
     };
 
     dispatch(makeOrder(order));
+    dispatch(setCartItems());
 
     history.push('/orders');
     handleClose();

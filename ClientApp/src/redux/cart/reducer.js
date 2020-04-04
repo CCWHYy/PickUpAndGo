@@ -1,7 +1,7 @@
-
 import {
     ADD_ITEM_TO_CART,
     REMOVE_ITEM_FROM_CART,
+    SET_CART_ITEMS,
 } from "./types";
 
 const initialState = {
@@ -44,6 +44,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 items: state.items.filter(({ id }) => id !== action.payload.id),
+            };
+        case SET_CART_ITEMS:
+            return {
+                ...state,
+                items: [],
             };
         default:
             return state;
