@@ -12,7 +12,7 @@ import { AdminStoreOrdersScreen } from "./screens/AdminStoreOrders";
 
 export const Routes = () => (
   <Switch>
-    <Route path="/">
+    <Route path="/" exact>
       <LandingScreen />
     </Route>
     <Route path="/cart">
