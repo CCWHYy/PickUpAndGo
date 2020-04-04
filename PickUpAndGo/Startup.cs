@@ -39,12 +39,12 @@ namespace PickUpAndGo
             {
                 x.SwaggerDoc("v1", new OpenApiInfo()
                 {
-                    Title = "PickUpAnGo API",
+                    Title = "ŁapuCapu API",
                     Version = "v1",
                     Contact = new OpenApiContact()
                     {
-                        Name = "JuniorSeniors",
-                        Email = "some@email.here"
+                        Name = "ŁapuCapu Team",
+                        Email = "f.madej@protonmail.com"
                     }
                 });
                 x.AddSecurityDefinition("Json Web Token", new OpenApiSecurityScheme()
