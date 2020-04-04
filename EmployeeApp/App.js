@@ -1,19 +1,13 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { Provider as PaperProvider } from "react-native-paper";
+import React from "react";
+import { Router } from "./routes";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <PaperProvider>
+      <SafeAreaProvider>
+        <Router />
+      </SafeAreaProvider>
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
