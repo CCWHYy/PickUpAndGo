@@ -1,4 +1,4 @@
-﻿namespace PickUpAndGo.Models
+﻿namespace PickUpAndGo.Models.User
 {
     public class UpdateUserModel
     {
