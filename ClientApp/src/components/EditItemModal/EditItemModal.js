@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -35,8 +35,6 @@ export const EditItemModal = ({ details, onClose, open }) => {
         onClose();
     };
 
-    console.log(details.quantity);
-    console.log(details.price);
     return (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
             <Card className={ classes.root }>

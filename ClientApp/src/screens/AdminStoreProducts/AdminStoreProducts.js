@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -11,6 +11,9 @@ import {AdminItem} from "../../components/Item";
 import {useDispatch, useSelector} from "react-redux";
 import {getStoreItems} from "../../redux/store/selectors";
 import {setStoreItems} from "../../redux/store/actions";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,10 +57,16 @@ export const AdminStoreProductsScreen = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const storeItems = useSelector(getStoreItems);
+    const [isSnackbarOpen, makeSnackbarOpen] = useState(false);
 
     useEffect(() => {
         dispatch(setStoreItems(items));
     }, []);
+
+    const handleAddItem = () => {
+        makeSnackbarOpen(true);
+    };
+    const handleSnackbarClose = () => makeSnackbarOpen(false);
 
     return (
         <div className={ classes.root }>
@@ -91,12 +100,22 @@ export const AdminStoreProductsScreen = () => {
                     color="secondary"
                     variant="contained"
                     className={ classes.addProduct }
+                    onClick={ handleAddItem }
                 >
                     Dodaj
                 </Button>
             </Card>
-
             <ItemsList items={storeItems} ItemComponent={AdminItem} />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={isSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message="Zaktualizowano liste produktów"
+            />
         </div>
     );
 };
