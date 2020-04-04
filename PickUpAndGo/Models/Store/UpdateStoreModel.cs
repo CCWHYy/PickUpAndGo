@@ -1,7 +1,8 @@
 ﻿namespace PickUpAndGo.Models.Store
 {
-    public class CreateStoreModel
+    public class UpdateStoreModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string StreetNumber { get; set; }

@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Models.Store;
 using PickUpAndGo.Persistence.Context;
+using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Controllers
 {
@@ -25,11 +30,10 @@ namespace PickUpAndGo.Controllers
 
 
         /// <summary>
-        /// Get by ID
+        /// Get by ID [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(StoreModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -37,7 +41,15 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok();
+                if (string.IsNullOrWhiteSpace(id))
+                    return BadRequest();
+
+                var getStoreRes = Uow.StoreRepository.Get(id);
+
+                if (getStoreRes != null)
+                    return Ok(Mapper.Map<StoreModel>(getStoreRes));
+
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -47,17 +59,18 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get All
+        /// Get All [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(IEnumerable<StoreModel>), 200)]
         [ProducesResponseType(500)]
         public IActionResult GetAll()
         {
             try
             {
-                return Ok();
+                var getStoresRes = Uow.StoreRepository.GetAll();
+
+                return Ok(getStoresRes.Select(Mapper.Map<StoreModel>));
             }
             catch (Exception e)
             {
@@ -67,20 +80,36 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add new store
+        /// Add new store [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(object), 201)]
+        [ProducesResponseType(typeof(StoreModel), 201)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public IActionResult Add()
+        public async Task<IActionResult> Add([FromBody] CreateStoreModel createStoreModel)
         {
             try
             {
-                return Ok();
+                if (string.IsNullOrWhiteSpace(createStoreModel.Name) ||
+                    string.IsNullOrWhiteSpace(createStoreModel.Address))
+                    return BadRequest("Store Name and Address is required!");
+
+                var getRes = Uow.StoreRepository.Find(x =>
+                    x.Name == createStoreModel.Name && x.Address == createStoreModel.Address);
+
+                if (getRes != null)
+                    return Conflict("Store with given name nad address already exists!");
+
+                var addResponse = Uow.StoreRepository.Add(Mapper.Map<Store>(createStoreModel));
+
+                await Uow.CompleteAsync();
+
+                if (addResponse != null)
+                    return Created(Mapper.Map<StoreModel>(addResponse));
+
+
+                return InternalServerError();
             }
             catch (Exception e)
             {
@@ -90,19 +119,34 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Update store
+        /// Update store [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(StoreModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult Update()
+        public async Task<IActionResult> Update([FromBody] UpdateStoreModel updateStoreModel)
         {
             try
             {
-                return Ok();
+                if (string.IsNullOrWhiteSpace(updateStoreModel.Id))
+                    return BadRequest("Store ID is required!");
+
+                if (string.IsNullOrWhiteSpace(updateStoreModel.Name) ||
+                    string.IsNullOrWhiteSpace(updateStoreModel.Address))
+                    return BadRequest("Store Name and Address is required!");
+
+                var getResponse = Uow.StoreRepository.Get(updateStoreModel.Id);
+
+                if (getResponse == null)
+                    return NotFound("Store with given ID does not exist!");
+                
+                var entity = Mapper.Map(updateStoreModel, getResponse);
+                var updateResponse = Uow.StoreRepository.Update(entity);
+                await Uow.CompleteAsync();
+
+                return Ok(Mapper.Map<StoreModel>(updateResponse));
             }
             catch (Exception e)
             {
@@ -113,19 +157,30 @@ namespace PickUpAndGo.Controllers
 
 
         /// <summary>
-        /// Delete store
+        /// Delete store [Working]
         /// </summary>
-        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult Delete([FromRoute, Required] string id)
+        public async Task<IActionResult> Delete([FromRoute, Required] string id)
         {
             try
             {
-                return NoContent();
+                if (string.IsNullOrWhiteSpace(id))
+                    return BadRequest("Store ID is required!");
+
+                var getRes = Uow.StoreRepository.Get(id);
+
+                if (getRes != null)
+                {
+                    Uow.StoreRepository.Remove(getRes);
+                    await Uow.CompleteAsync();
+                    return NoContent();
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
