@@ -23,7 +23,10 @@ import { setCartItems } from "../../redux/cart/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    position: "relative"
+    position: "sticky"
+  },
+  container: {
+    paddingTop: theme.spacing(2)
   },
   title: {
     marginLeft: theme.spacing(2),

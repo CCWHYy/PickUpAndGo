@@ -80,7 +80,7 @@ export const Navbar = ({ items = [] }) => {
   const history = useHistory();
   const cartItems = useSelector(getCartItems);
 
-  const access = ROLES.ADMIN;
+  const access = ROLES.USER;
 
   const goTo = url => () => {
     history.push(url);
@@ -124,16 +124,14 @@ export const Navbar = ({ items = [] }) => {
       </AppBar>
       <Drawer open={drawer} onClose={() => setDrawer(false)}>
         <List component="nav" aria-label="main mailbox folders">
-          {navList.map(({ link, text, Icon, neededAccess }) => {
-            if (neededAccess.includes(access)) {
-              return (
-                <ListItem button onClick={goTo(link)}>
-                  <ListItemIcon>{Icon}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              );
-            }
-          })}
+          {navList.map(({ link, text, Icon, neededAccess }) =>
+            neededAccess.includes(access) ? (
+              <ListItem button onClick={goTo(link)}>
+                <ListItemIcon>{Icon}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ) : null
+          )}
         </List>
       </Drawer>
       <CartScreen open={cartOpen} handleClose={() => setCartOpen(false)} />

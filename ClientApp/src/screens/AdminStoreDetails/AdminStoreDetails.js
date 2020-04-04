@@ -6,8 +6,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const useStyles = makeStyles(theme => ({
   root: {

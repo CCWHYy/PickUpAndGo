@@ -1,11 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { OrdersList } from "../../components/OrdersList";
-import { getOrdersList } from "../../redux/orders/selectors";
+// import { getOrdersList } from "../../redux/orders/selectors";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +33,7 @@ const order = [
 
 export const AdminStoreOrdersScreen = () => {
   const classes = useStyles();
-  const orders = useSelector(getOrdersList);
+  // const orders = useSelector(getOrdersList);
 
   return (
     <div className={classes.root}>

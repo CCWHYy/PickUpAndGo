@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Typography,
-  makeStyles
-} from "@material-ui/core";
+import { Box, Button, Container, Typography } from "@material-ui/core";
 import theme from "../../theme";
 
 import TextField from "@material-ui/core/TextField";
@@ -20,9 +14,10 @@ const LandingScreen = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("SEEN_ONBOARDING") !== "TRUE") {
+    const SEEN_ONBOARDING = "SEEN_ONBOARDING";
+    if (localStorage.getItem(SEEN_ONBOARDING) !== "TRUE") {
       setOpen(true);
-      localStorage.setItem("SEEN_ONBOARDING", "TRUE");
+      localStorage.setItem(SEEN_ONBOARDING, "TRUE");
     }
   }, []);
 

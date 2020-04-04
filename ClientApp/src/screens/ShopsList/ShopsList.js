@@ -61,7 +61,7 @@ export const ShopsListScreen = () => {
 
   useEffect(() => {
     dispatch(setStoresList(mockedShops));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={classes.root}>

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 
 import { ItemsList } from "../../components/ItemsList";
 import { ShopItem } from "../../components/Item";
@@ -45,7 +44,7 @@ export const ShopScreen = () => {
 
   useEffect(() => {
     dispatch(setStoreItems(items));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={classes.root}>

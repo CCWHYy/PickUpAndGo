@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const CartItem = props => {
-  const { name, price, description, id } = props;
+  const { name, price, description, id, quantity = 1 } = props;
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -36,9 +36,9 @@ export const CartItem = props => {
       price,
       description,
       id,
-      quantity: props.quantity || 1
+      quantity
     });
-  }, []);
+  }, [name, price, description, id, quantity]);
 
   const removeItem = () => {
     dispatch(removeItemFromCart(details));

@@ -62,12 +62,12 @@ export const Order = ({
         id="panel1bh-header"
       >
         <Typography className={classes.heading}>
-          <div>{storeName}</div>
-          <div>{orderStatus}</div>
+          <p>{storeName}</p>
+          <p>{orderStatus}</p>
         </Typography>
         <Typography className={classes.secondaryHeading}>
-          <div>{orderDate}</div>
-          <div>{orderPrice}</div>
+          <p>{orderDate}</p>
+          <p>{orderPrice}</p>
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.details}>

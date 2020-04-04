@@ -9,6 +9,7 @@ const useStyles = makeStyles(theme => ({
   shopsList: {
     display: "flex",
     flexWrap: "wrap",
+    justifyContent: "center",
     maxWidth: 900
   }
 }));

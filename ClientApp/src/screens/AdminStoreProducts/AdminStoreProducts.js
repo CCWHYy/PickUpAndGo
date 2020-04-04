@@ -12,8 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getStoreItems } from "../../redux/store/selectors";
 import { setStoreItems } from "../../redux/store/actions";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -62,7 +60,7 @@ export const AdminStoreProductsScreen = () => {
 
   useEffect(() => {
     dispatch(setStoreItems(items));
-  }, []);
+  }, [dispatch]);
 
   const handleAddItem = () => {
     makeSnackbarOpen(true);
