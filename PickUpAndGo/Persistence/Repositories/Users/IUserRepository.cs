@@ -6,7 +6,7 @@ using PickUpAndGo.Persistence.Entities;
 
 namespace PickUpAndGo.Persistence.Repositories.Users
 {
-    interface IUserRepository : IRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
     }
 }
