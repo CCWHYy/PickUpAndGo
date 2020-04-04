@@ -35,32 +35,43 @@ const useStyles = makeStyles({
   }
 });
 
-const navList = [{
-  link: '/shops',
-  Icon: <Storefront />,
-  text: 'Sklepy',
-  neededAccess: ['user']
-}, {
-  link: '/orders',
-  Icon: <AccountCircle />,
-  text: 'Twoje konto',
-  neededAccess: ['user'],
-}, {
-  link: '/admin/store/details',
-  Icon: <AccountCircle />,
-  text: 'Twój sklep',
-  neededAccess: ['admin'],
-}, {
-  link: '/admin/store/products',
-  Icon: <AccountCircle />,
-  text: 'Twoje produkty',
-  neededAccess: ['admin'],
-}, {
-  link: '/admin/store/orders',
-  Icon: <AccountCircle />,
-  text: 'Twoje zamówienia',
-  neededAccess: ['admin'],
-}, ];
+const ROLES = {
+  ADMIN: "admin",
+  USER: "user"
+};
+
+const navList = [
+  {
+    link: "/shops",
+    Icon: <Storefront />,
+    text: "Sklepy",
+    neededAccess: [ROLES.USER]
+  },
+  {
+    link: "/orders",
+    Icon: <AccountCircle />,
+    text: "Twoje konto",
+    neededAccess: [ROLES.USER]
+  },
+  {
+    link: "/admin/store/details",
+    Icon: <AccountCircle />,
+    text: "Twój sklep",
+    neededAccess: [ROLES.ADMIN]
+  },
+  {
+    link: "/admin/store/products",
+    Icon: <AccountCircle />,
+    text: "Twoje produkty",
+    neededAccess: [ROLES.ADMIN]
+  },
+  {
+    link: "/admin/store/orders",
+    Icon: <AccountCircle />,
+    text: "Twoje zamówienia",
+    neededAccess: [ROLES.ADMIN]
+  }
+];
 
 export const Navbar = ({ items = [] }) => {
   const classes = useStyles();
@@ -69,7 +80,7 @@ export const Navbar = ({ items = [] }) => {
   const history = useHistory();
   const cartItems = useSelector(getCartItems);
 
-  const access = 'user';
+  const access = ROLES.USER;
 
   const goTo = url => () => {
     history.push(url);
@@ -77,7 +88,9 @@ export const Navbar = ({ items = [] }) => {
   };
 
   let productsNum = 0;
-  cartItems.forEach(({ quantity }) => { productsNum += quantity });
+  cartItems.forEach(({ quantity }) => {
+    productsNum += quantity;
+  });
 
   return (
     <div>
@@ -95,32 +108,30 @@ export const Navbar = ({ items = [] }) => {
           <Typography variant="h6" className={classes.title}>
             Łapu-Capu
           </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="account"
-            onClick={() => setCartOpen(!cartOpen)}
-          >
-            <Badge badgeContent={productsNum} color="secondary">
-            <ShoppingCart />
-            </Badge>
-          </IconButton>
+          {[ROLES.USER].includes(access) && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="account"
+              onClick={() => setCartOpen(!cartOpen)}
+            >
+              <Badge badgeContent={productsNum} color="secondary">
+                <ShoppingCart />
+              </Badge>
+            </IconButton>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer open={drawer} onClose={() => setDrawer(false)}>
         <List component="nav" aria-label="main mailbox folders">
-          {navList.map(({ link, text, Icon, neededAccess }) => {
-            if (neededAccess.includes(access)) {
-              return (
-                  <ListItem button onClick={goTo(link)}>
-                    <ListItemIcon>
-                      {Icon}
-                    </ListItemIcon>
-                    <ListItemText primary={ text } />
-                  </ListItem>
-              );
-            }
-          })}
+          {navList.map(({ link, text, Icon, neededAccess }) =>
+            neededAccess.includes(access) ? (
+              <ListItem button onClick={goTo(link)}>
+                <ListItemIcon>{Icon}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ) : null
+          )}
         </List>
       </Drawer>
       <CartScreen open={cartOpen} handleClose={() => setCartOpen(false)} />

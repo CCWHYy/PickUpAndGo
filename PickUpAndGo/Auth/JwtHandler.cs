@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -11,7 +13,7 @@ namespace PickUpAndGo.Auth
 {
     public interface IJwtHandler
     {
-        UserJwtModel Create(string userId);
+        UserJwtModel Create(string userId, string role);
         TokenValidationParameters Parameters { get; }
     }
 
@@ -77,7 +79,7 @@ namespace PickUpAndGo.Auth
             };
         }
 
-        public UserJwtModel Create(string userId)
+        public UserJwtModel Create(string userId, string role)
         {
             var nowUtc = DateTime.UtcNow;
             var expires = nowUtc.AddDays(_settings.ExpiryDays);
@@ -85,7 +87,10 @@ namespace PickUpAndGo.Auth
             var exp = (long) (new TimeSpan(expires.Ticks - centuryBegin.Ticks).TotalSeconds);
             var now = (long) (new TimeSpan(nowUtc.Ticks - centuryBegin.Ticks).TotalSeconds);
             var issuer = _settings.Issuer ?? string.Empty;
-            var payload = new JwtPayload
+            var payload = new JwtPayload(claims: new List<Claim>()
+            {
+                new Claim(ClaimTypes.Role, role)
+            })
             {
                 {"sub", userId},
                 {"unique_name", userId},
@@ -95,6 +100,7 @@ namespace PickUpAndGo.Auth
                 {"exp", exp},
                 {"jti", Guid.NewGuid().ToString("N")}
             };
+
             var jwt = new JwtSecurityToken(_jwtHeader, payload);
 
             var token = _jwtSecurityTokenHandler.WriteToken(jwt);

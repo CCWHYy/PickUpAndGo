@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Auth;
 using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;
@@ -19,9 +22,10 @@ namespace PickUpAndGo.Controllers
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="contextAccessor"></param>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public ProductController(AppDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public ProductController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
         {
         }
 
@@ -60,14 +64,20 @@ namespace PickUpAndGo.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(object), 200)]
         [ProducesResponseType(500)]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string storeId)
         {
             try
             {
-                var products = Uow.ProductRepository.GetAll();
-                var productModels = products.Select(Mapper.Map<ProductModel>);
-
-                return Ok(productModels);
+                if (string.IsNullOrWhiteSpace(storeId))
+                {
+                    var products = Uow.ProductRepository.GetAll();
+                    return Ok(products.Select(Mapper.Map<ProductModel>));
+                }
+                else
+                {
+                    var products = Uow.ProductRepository.FindAll(x => x.StoreId == storeId);
+                    return Ok(products.Select(Mapper.Map<ProductModel>));
+                }
             }
             catch (Exception e)
             {
@@ -80,6 +90,7 @@ namespace PickUpAndGo.Controllers
         /// Add product [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(object), 201)]
         [ProducesResponseType(400)]

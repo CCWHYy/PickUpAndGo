@@ -13,15 +13,15 @@ export default function App() {
         main: "#efebce",
         light: "#ffffff",
         darkColor: "#bcb99d",
-        contrastText: "#000000",
+        contrastText: "#000000"
       },
       secondary: {
         main: "#bb8588",
         light: "#eeb5b8",
         dark: "#8a585b",
-        contrastText: "#000000",
-      },
-    },
+        contrastText: "#000000"
+      }
+    }
   };
 
   return (

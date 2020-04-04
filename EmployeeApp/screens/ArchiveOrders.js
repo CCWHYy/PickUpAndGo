@@ -12,23 +12,23 @@ const orderss = [
   {
     id: "1",
     number: "32321",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "2",
     number: "30985",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "3",
     number: "74628",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
   },
   {
     id: "4",
     number: "5934u953",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-  },
+    products: ["mleko", "miód", "wódeczka", "chlebek"]
+  }
 ];
 
 const Stack = createStackNavigator();
@@ -41,7 +41,7 @@ const ArchiveOrdersStack = () => {
       screenOptions={{
         header: ({ scene, navigation }) => (
           <Header scene={scene} navigation={navigation} />
-        ),
+        )
       }}
     >
       <Stack.Screen
@@ -57,7 +57,7 @@ const ArchiveOrdersStack = () => {
     </Stack.Navigator>
   );
 };
-const ArchiveOrders = (props) => {
+const ArchiveOrders = props => {
   const { navigation } = props;
   const { colors } = useTheme();
   return (
@@ -80,12 +80,12 @@ const ArchiveOrders = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#fff"
   },
   listContainer: {
     top: 30,
-    width: "100%",
-  },
+    width: "100%"
+  }
 });
 
 export { ArchiveOrdersStack };

@@ -1,18 +1,20 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef } from "react";
 
 export const useSafeReducer = (reducer, initialState) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const mountedRef = useRef(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const mountedRef = useRef(false);
 
-    useEffect(() => {
-        mountedRef.current = true;
+  useEffect(() => {
+    mountedRef.current = true;
 
-        return () => { mountedRef.current = false; };
-    }, []);
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
-    const safeDispatch = (...args) => mountedRef.current && dispatch(...args);
+  const safeDispatch = (...args) => mountedRef.current && dispatch(...args);
 
-    return [state, safeDispatch];
+  return [state, safeDispatch];
 };
 
 export default useSafeReducer;

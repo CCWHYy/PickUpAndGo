@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickUpAndGo.Persistence;
 using PickUpAndGo.Persistence.Context;
@@ -28,9 +29,12 @@ namespace PickUpAndGo.Controllers
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public CustomControllerBase(AppDbContext dbContext, IMapper mapper)
+        /// <param name="contextAccessor"></param>
+        public CustomControllerBase(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper)
         {
+            contextAccessor.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             DbContext = dbContext;
             Mapper = mapper;
             Uow = new UnitOfWork(dbContext);

@@ -39,12 +39,12 @@ namespace PickUpAndGo
             {
                 x.SwaggerDoc("v1", new OpenApiInfo()
                 {
-                    Title = "PickUpAnGo API",
+                    Title = "ŁapuCapu API",
                     Version = "v1",
                     Contact = new OpenApiContact()
                     {
-                        Name = "JuniorSeniors",
-                        Email = "some@email.here"
+                        Name = "ŁapuCapu Team",
+                        Email = "f.madej@protonmail.com"
                     }
                 });
                 x.AddSecurityDefinition("Json Web Token", new OpenApiSecurityScheme()
@@ -86,6 +86,7 @@ namespace PickUpAndGo
             // Configure jwt handler
             IJwtHandler jwtHandler = new JwtHandler(Options.Create(config.Jwt));
 
+            services.AddHttpContextAccessor();
             services.AddSingleton<IJwtHandler, JwtHandler>(x => (JwtHandler) jwtHandler);
 
             services.AddAuthentication(options =>

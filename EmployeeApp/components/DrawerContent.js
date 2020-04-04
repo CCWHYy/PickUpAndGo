@@ -13,7 +13,7 @@ const DrawerContent = ({ navigation }) => {
           <Avatar.Image
             source={{
               uri:
-                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png",
+                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png"
             }}
             size={50}
           />
@@ -72,33 +72,33 @@ const DrawerContent = ({ navigation }) => {
 const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: "row",
-    width: 35,
+    width: 35
   },
   badge: { position: "relative", top: 3, right: 5 },
   icon: {
-    width: 35,
+    width: 35
   },
   drawerContent: {
-    flex: 1,
+    flex: 1
   },
   userInfoSection: {
-    paddingLeft: 20,
+    paddingLeft: 20
   },
   title: {
     marginTop: 20,
-    fontWeight: "bold",
+    fontWeight: "bold"
   },
   caption: {
     fontSize: 14,
-    lineHeight: 14,
+    lineHeight: 14
   },
   paragraph: {
     fontWeight: "bold",
-    marginRight: 3,
+    marginRight: 3
   },
   drawerSection: {
-    marginTop: 15,
-  },
+    marginTop: 15
+  }
 });
 
 export default DrawerContent;

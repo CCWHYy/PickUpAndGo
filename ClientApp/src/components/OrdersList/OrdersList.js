@@ -1,28 +1,36 @@
-import React from 'react';
+import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
 
 import { Order } from "../Order";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: 500,
-        textAlign: 'center',
-        marginTop: 16,
-    },
+const useStyles = makeStyles(theme => ({
+  emptyList: {
+    textAlign: "center"
+  }
 }));
 
 export const OrdersList = ({ orders }) => {
-    const classes = useStyles();
+  const classes = useStyles();
 
-    return (
-        <div className={classes.root}>
-            {orders.map((order) => (
-                <Order {...order}/>
-            ))}
-            { !orders.length && "Nie posiadasz żadnych zamówień"}
-        </div>
-    );
+  return (
+    <Container maxWidth="md">
+      {orders.map(order => (
+        <Order {...order} />
+      ))}
+      {(!orders || !orders.length) && (
+        <Typography
+          className={classes.emptyList}
+          variant="body2"
+          component="p"
+        >
+          Nie posiadasz żadnych zamówień
+        </Typography>
+      )}
+    </Container>
+  );
 };
 
 export default OrdersList;

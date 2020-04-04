@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
@@ -23,7 +23,10 @@ import { setCartItems } from "../../redux/cart/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    position: "relative"
+    position: "sticky"
+  },
+  container: {
+    paddingTop: theme.spacing(2)
   },
   title: {
     marginLeft: theme.spacing(2),
@@ -51,17 +54,17 @@ export const CartScreen = ({ open, handleClose }) => {
     const order = {
       store: storeDetails,
       storeName: storeDetails.name,
-      orderStatus: 'W trakcie realizacji',
-      orderDate: '03.04.2020',
-      orderPrice: '58.80 PLN',
+      orderStatus: "W trakcie realizacji",
+      orderDate: "03.04.2020",
+      orderPrice: "58.80 PLN",
       items,
-      qrCode: '/shopLogos/zabka.jpeg',
+      qrCode: "/shopLogos/zabka.jpeg"
     };
 
     dispatch(makeOrder(order));
     dispatch(setCartItems());
 
-    history.push('/orders');
+    history.push("/orders");
     handleClose();
   };
 
@@ -97,7 +100,7 @@ export const CartScreen = ({ open, handleClose }) => {
           aria-label="Przejdź do płatności"
           color="secondary"
           className={classes.fab}
-          onClick={ handleMakeOrder }
+          onClick={handleMakeOrder}
         >
           <CreditCard className={classes.extendedIcon} />
         </Fab>

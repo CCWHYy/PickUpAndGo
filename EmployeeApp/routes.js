@@ -12,9 +12,7 @@ export const Router = () => {
   return (
     <>
       <NavigationContainer>
-        <Drawer.Navigator
-          drawerContent={(props) => <DrawerContent {...props} />}
-        >
+        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
           <Drawer.Screen name="TakeOrdersStack" component={TakeOrdersStack} />
           <Drawer.Screen
             name="ArchiveOrdersStack"

@@ -1,3 +1,3 @@
-export const SET_STORE_ITEMS = 'SET_STORE_ITEMS';
-export const SET_STORES_LIST = 'SET_STORES_LIST';
-export const SET_DETAILS = 'SET_DETAILS';
+export const SET_STORE_ITEMS = "SET_STORE_ITEMS";
+export const SET_STORES_LIST = "SET_STORES_LIST";
+export const SET_DETAILS = "SET_DETAILS";
