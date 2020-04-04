@@ -7,7 +7,7 @@ import { Item } from "./Item";
 
 const useStyles = makeStyles((theme) => ({
     quantity: {
-        marginRight: 8,
+        marginRight: 16,
         display: 'inline',
     },
 }));

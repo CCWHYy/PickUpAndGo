@@ -81,9 +81,6 @@ export const Order = ({ storeName, orderStatus, orderDate, orderPrice, items, qr
                     Pokaż kod QR
                 </Button>
                 <Divider component="p" className={ classes.divider } />
-                <Typography variant="h6" component="h6">
-                    Lista zakupów
-                </Typography>
                 <ItemsList items={ items } ItemComponent={ OrderItem } />
             </ExpansionPanelDetails>
             <QRModal qrUrl={ qrCode } open={ isQROpen } onClose={ closeQRModal } />

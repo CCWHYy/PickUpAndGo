@@ -1,14 +1,17 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import { Order } from "../Order";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         width: 500,
-        textAlign: 'center',
         marginTop: 16,
+    },
+    emptyList: {
+        textAlign: 'center',
     },
 }));
 
@@ -20,7 +23,15 @@ export const OrdersList = ({ orders }) => {
             {orders.map((order) => (
                 <Order {...order}/>
             ))}
-            { !orders.length && "Nie posiadasz żadnych zamówień"}
+            { (!orders || !orders.length) && (
+                <Typography
+                    className={ classes.emptyList }
+                    variant="body2"
+                    component="p"
+                >
+                    Nie posiadasz żadnych zamówień
+                </Typography>
+            )}
         </div>
     );
 };

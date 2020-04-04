@@ -1,8 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
+import { ItemsList } from "../../components/ItemsList";
+import {AdminItem} from "../../components/Item";
+import {useDispatch, useSelector} from "react-redux";
+import {getStoreItems} from "../../redux/store/selectors";
+import {setStoreItems} from "../../redux/store/actions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,19 +20,83 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
     },
     header: {
-        marginTop: 32,
+        marginTop: 16,
         marginBottom: 16,
+        textAlign: 'center',
+    },
+    form: {
+        width: 468,
+        padding: '0 16px 16px',
+        display: 'flex',
+        flexFlow: 'column',
+        margin: 16,
+    },
+    addProduct: {
+        marginTop: 16,
     },
 }));
 
+const items = [
+    {
+        id: 1,
+        name: 'Bułeczki',
+        price: '1.90',
+        description: 'przepyszne bułeczki',
+    }, {
+        id: 2,
+        name: 'Wódeczka',
+        price: '21.90',
+        description: 'przepyszna wódeczka',
+    },
+];
+
 export const AdminStoreProductsScreen = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const storeItems = useSelector(getStoreItems);
+
+    useEffect(() => {
+        dispatch(setStoreItems(items));
+    }, []);
 
     return (
         <div className={ classes.root }>
             <Typography variant="h4" component="h3" className={ classes.header }>
                 Twoje produkty
             </Typography>
+            <Card className={ classes.form }>
+                <Typography variant="h5" component="h5" className={ classes.header }>
+                    Dodaj produkt
+                </Typography>
+                <TextField
+                    label="Nazwa produktu"
+                    color="secondary"
+                />
+                <TextField
+                    label="Opis produktu (opcjonalnie)"
+                    color="secondary"
+                />
+                <TextField
+                    type="number"
+                    label="Ilość"
+                    color="secondary"
+                />
+                <TextField
+                    type="number"
+                    label="Cena"
+                    color="secondary"
+                />
+                <Button
+                    href=""
+                    color="secondary"
+                    variant="contained"
+                    className={ classes.addProduct }
+                >
+                    Dodaj
+                </Button>
+            </Card>
+
+            <ItemsList items={storeItems} ItemComponent={AdminItem} />
         </div>
     );
 };

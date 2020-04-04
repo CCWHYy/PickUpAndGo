@@ -11,6 +11,7 @@ import { getStoreItems } from "../../redux/store/selectors";
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        marginTop: 16,
         display: 'flex',
         flexFlow: 'column',
         justifyContent: 'center',
@@ -47,9 +48,6 @@ export const ShopScreen = () => {
 
     return (
         <div className={ classes.root }>
-            <Typography variant="h4" component="h3" className={ classes.header }>
-                Lista produktów
-            </Typography>
             <ItemsList items={ storeItems } ItemComponent={ShopItem} />
         </div>
     );

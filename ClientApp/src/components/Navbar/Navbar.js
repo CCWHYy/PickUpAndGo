@@ -35,32 +35,37 @@ const useStyles = makeStyles({
   }
 });
 
+const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user',
+};
+
 const navList = [{
   link: '/shops',
   Icon: <Storefront />,
   text: 'Sklepy',
-  neededAccess: ['user']
+  neededAccess: [ROLES.USER]
 }, {
   link: '/orders',
   Icon: <AccountCircle />,
   text: 'Twoje konto',
-  neededAccess: ['user'],
+  neededAccess: [ROLES.USER]
 }, {
   link: '/admin/store/details',
   Icon: <AccountCircle />,
   text: 'Twój sklep',
-  neededAccess: ['admin'],
+  neededAccess: [ROLES.ADMIN]
 }, {
   link: '/admin/store/products',
   Icon: <AccountCircle />,
   text: 'Twoje produkty',
-  neededAccess: ['admin'],
+  neededAccess: [ROLES.ADMIN]
 }, {
   link: '/admin/store/orders',
   Icon: <AccountCircle />,
   text: 'Twoje zamówienia',
-  neededAccess: ['admin'],
-}, ];
+  neededAccess: [ROLES.ADMIN]
+}];
 
 export const Navbar = ({ items = [] }) => {
   const classes = useStyles();
@@ -69,7 +74,7 @@ export const Navbar = ({ items = [] }) => {
   const history = useHistory();
   const cartItems = useSelector(getCartItems);
 
-  const access = 'user';
+  const access = ROLES.ADMIN;
 
   const goTo = url => () => {
     history.push(url);
@@ -95,16 +100,18 @@ export const Navbar = ({ items = [] }) => {
           <Typography variant="h6" className={classes.title}>
             Łapu-Capu
           </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="account"
-            onClick={() => setCartOpen(!cartOpen)}
-          >
-            <Badge badgeContent={productsNum} color="secondary">
-            <ShoppingCart />
-            </Badge>
-          </IconButton>
+          {[ROLES.USER].includes(access) && (
+              <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="account"
+              onClick={() => setCartOpen(!cartOpen)}
+            >
+              <Badge badgeContent={productsNum} color="secondary">
+              <ShoppingCart />
+              </Badge>
+            </IconButton>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer open={drawer} onClose={() => setDrawer(false)}>
