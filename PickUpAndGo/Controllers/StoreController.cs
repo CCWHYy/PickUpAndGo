@@ -9,7 +9,7 @@ namespace PickUpAndGo.Controllers
     /// <summary>
     /// Product Controller
     /// </summary>
-    [Route("api/products")]
+    [Route("api/stores")]
     public class StoreController : CustomControllerBase
     {
         /// <summary>
