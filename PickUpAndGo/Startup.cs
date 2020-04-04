@@ -45,6 +45,28 @@ namespace PickUpAndGo
                         Email = "some@email.here"
                     }
                 });
+                x.AddSecurityDefinition("Json Web Token", new OpenApiSecurityScheme()
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter JWT token with Bearer in field below.",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Id = "Json Web Token",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 x.IncludeXmlComments(xmlPath);
@@ -58,12 +80,12 @@ namespace PickUpAndGo
 
             var mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
-            
+
             // Configure jwt handler
             IJwtHandler jwtHandler = new JwtHandler(Options.Create(config.Jwt));
 
             services.AddSingleton<IJwtHandler, JwtHandler>(x => (JwtHandler) jwtHandler);
-            
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -75,7 +97,7 @@ namespace PickUpAndGo
                 options.TokenValidationParameters = jwtHandler.Parameters;
                 options.Validate();
             });
-            
+
             // Configure database
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(config.ConnectionStrings.Database));
