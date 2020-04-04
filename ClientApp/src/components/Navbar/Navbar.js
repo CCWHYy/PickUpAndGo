@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -19,9 +20,11 @@ import {
   ShoppingCart,
   Storefront
 } from "@material-ui/icons";
-import { CartScreen } from "../../screens/Cart";
 
+import { CartScreen } from "../../screens/Cart";
 import { theme } from "../../theme";
+import Badge from "@material-ui/core/Badge";
+import { getCartItems } from "../../redux/cart/selectors";
 
 const useStyles = makeStyles({
   title: {
@@ -37,11 +40,15 @@ export const Navbar = ({ items = [] }) => {
   const [drawer, setDrawer] = React.useState(false);
   const [cartOpen, setCartOpen] = React.useState(false);
   const history = useHistory();
+  const cartItems = useSelector(getCartItems);
 
   const goTo = url => () => {
     history.push(url);
     setDrawer(false);
   };
+
+  let productsNum = 0;
+  cartItems.forEach(({ quantity }) => { productsNum += quantity });
 
   return (
     <div>
@@ -65,7 +72,9 @@ export const Navbar = ({ items = [] }) => {
             aria-label="account"
             onClick={() => setCartOpen(!cartOpen)}
           >
+            <Badge badgeContent={productsNum} color="secondary">
             <ShoppingCart />
+            </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
