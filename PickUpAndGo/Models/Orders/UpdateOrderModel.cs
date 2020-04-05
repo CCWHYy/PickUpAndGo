@@ -9,10 +9,6 @@ namespace PickUpAndGo.Models.Orders
     public class UpdateOrderModel
     {
         public string Id { get; set; }
-        public string UserId { get; set; }
-        public string StoreId { get; set; }
         public string State { get; set; }
-
-        public ICollection<ProductModel> Products { get; set; }
     }
 }

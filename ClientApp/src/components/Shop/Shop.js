@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const Shop = props => {
-  const { name, location, logoImg, description } = props;
+  const { name, location, logoUrl, description } = props;
 
   const classes = useStyles();
   const history = useHistory();
@@ -50,13 +50,13 @@ export const Shop = props => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-              {name[0].toUpperCase()}
+            {name[0].toUpperCase()}
           </Avatar>
         }
         title={name}
         subheader={location}
       />
-      <CardMedia className={classes.media} image={logoImg} title={name} />
+      <CardMedia className={classes.media} image={logoUrl} title={name} />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="div">
           {description}

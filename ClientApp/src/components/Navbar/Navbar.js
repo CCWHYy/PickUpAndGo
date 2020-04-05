@@ -18,7 +18,8 @@ import {
   AccountCircle,
   Menu,
   ShoppingCart,
-  Storefront
+  Storefront,
+  ExitToApp
 } from "@material-ui/icons";
 
 import { CartScreen } from "../../screens/Cart";
@@ -40,6 +41,7 @@ const ROLES = {
   ADMIN: "Admin",
   OWNER: "Owner",
   USER: "User",
+  ANON: "Anonymous"
 };
 
 const navList = [
@@ -66,6 +68,12 @@ const navList = [
     Icon: <AccountCircle />,
     text: "Twoje zamówienia",
     neededAccess: [ROLES.OWNER]
+  },
+  {
+    link: "/register",
+    Icon: <AccountCircle />,
+    text: "Zarejestruj się",
+    neededAccess: [ROLES.ANON]
   }
 ];
 
@@ -77,7 +85,7 @@ export const Navbar = ({ items = [] }) => {
   const cartItems = useSelector(getCartItems);
   const userDetails = useSelector(getDetails);
 
-  const access = userDetails && userDetails.role;
+  const access = (userDetails && userDetails.role) || ROLES.ANON;
 
   const goTo = url => () => {
     history.push(url);
@@ -128,6 +136,14 @@ export const Navbar = ({ items = [] }) => {
                 <ListItemText primary={text} />
               </ListItem>
             ) : null
+          )}
+          {access !== ROLES.ANON && (
+            <ListItem button onClick={() => localStorage.removeItem("token")}>
+              <ListItemIcon>
+                <ExitToApp />
+              </ListItemIcon>
+              <ListItemText primary="Wyloguj się" />
+            </ListItem>
           )}
         </List>
       </Drawer>

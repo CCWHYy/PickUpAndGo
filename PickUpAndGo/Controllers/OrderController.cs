@@ -232,23 +232,14 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(updateOrderModel.UserId) ||
-                    String.IsNullOrWhiteSpace(updateOrderModel.StoreId))
-                {
-                    return BadRequest("At least one of required fields are empty!");
-                }
+                if (string.IsNullOrWhiteSpace(updateOrderModel.State))
+                    return BadRequest("State cannot be null!");
 
                 var order = Uow.OrderRepository.Get(updateOrderModel.Id);
+
                 if (order == null)
                     return NotFound("Order with given Id was not found!");
 
-                var store = Uow.StoreRepository.Get(updateOrderModel.StoreId);
-                var user = Uow.UserRepository.Get(updateOrderModel.UserId);
-
-                if (user == null || store == null)
-                {
-                    return NotFound("Such user or store doesn't exist!");
-                }
 
                 var entity = Mapper.Map(updateOrderModel, order);
                 var updatedOrder = Uow.OrderRepository.Update(entity);
