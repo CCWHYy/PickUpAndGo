@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -195,7 +195,7 @@ namespace PickUpAndGo.Controllers
                     if (!passCheck.Verified)
                         return Unauthorized("Given email or password is incorrect!");
 
-                    var jwtToken = _jwtHandler.Create(user.Id, user.Role);
+                    var jwtToken = _jwtHandler.Create(user.Id, user.Role, user.StoreId);
                     return Ok(jwtToken);
                 }
                 else

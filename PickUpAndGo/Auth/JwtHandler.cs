@@ -13,7 +13,7 @@ namespace PickUpAndGo.Auth
 {
     public interface IJwtHandler
     {
-        UserJwtModel Create(string userId, string role);
+        UserJwtModel Create(string userId, string role, string storeId);
         TokenValidationParameters Parameters { get; }
     }
 
@@ -79,7 +79,7 @@ namespace PickUpAndGo.Auth
             };
         }
 
-        public UserJwtModel Create(string userId, string role)
+        public UserJwtModel Create(string userId, string role, string storeId)
         {
             var nowUtc = DateTime.UtcNow;
             var expires = nowUtc.AddDays(_settings.ExpiryDays);
@@ -89,7 +89,8 @@ namespace PickUpAndGo.Auth
             var issuer = _settings.Issuer ?? string.Empty;
             var payload = new JwtPayload(claims: new List<Claim>()
             {
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim("StoreId", storeId)
             })
             {
                 {"sub", userId},
