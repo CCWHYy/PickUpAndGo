@@ -286,15 +286,15 @@ namespace PickUpAndGo.Controllers
             {
                 var entity = new User
                 {
-                    Email = "ow@ow.com",
-                    Role = Roles.Owner,
-                    Password = _passwordHasher.Hash("owner"),
-                    StoreId = "19351FF9-AC6B-427F-9BBE-8170436BB752",
+                    Email = "admin@admin.com",
+                    Role = Roles.Admin,
+                    Password = _passwordHasher.Hash("admin"),
                 };
-
                 var res = Uow.UserRepository.Add(entity);
+
                 await Uow.CompleteAsync();
                 return Created(Mapper.Map<UserModel>(res));
+
                 return Ok(_appSettings.Environment);
             }
             catch (Exception e)

@@ -137,7 +137,7 @@ namespace PickUpAndGo.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return InternalServerError();
+                return InternalServerError(e.ToString());
             }
         }
 
