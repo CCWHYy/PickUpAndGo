@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { Fab } from "../components/Fab";
 import { Header } from "../components/Header";
-import { MyList } from "../components/List";
+import { OrdersList } from "../components/OrdersList";
 import { QRScanner } from "./QRScanner";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -63,11 +63,11 @@ const ArchiveOrders = props => {
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
-        <MyList
+        <OrdersList
           items={orderss}
           justWatch
           handlePress={() =>
-            navigation.navigate("Products", { items: orderss.products })
+            navigation.navigate("OrderDetails", { items: orderss.products })
           }
         />
       </View>
