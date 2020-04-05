@@ -25,6 +25,7 @@ import { CartScreen } from "../../screens/Cart";
 import { theme } from "../../theme";
 import Badge from "@material-ui/core/Badge";
 import { getCartItems } from "../../redux/cart/selectors";
+import { getDetails } from "../../redux/auth/selectors";
 
 const useStyles = makeStyles({
   title: {
@@ -36,8 +37,9 @@ const useStyles = makeStyles({
 });
 
 const ROLES = {
-  ADMIN: "admin",
-  USER: "user"
+  ADMIN: "Admin",
+  OWNER: "Owner",
+  USER: "User",
 };
 
 const navList = [
@@ -54,22 +56,16 @@ const navList = [
     neededAccess: [ROLES.USER]
   },
   {
-    link: "/admin/store/details",
-    Icon: <AccountCircle />,
-    text: "Twój sklep",
-    neededAccess: [ROLES.ADMIN]
-  },
-  {
     link: "/admin/store/products",
     Icon: <AccountCircle />,
     text: "Twoje produkty",
-    neededAccess: [ROLES.ADMIN]
+    neededAccess: [ROLES.OWNER]
   },
   {
     link: "/admin/store/orders",
     Icon: <AccountCircle />,
     text: "Twoje zamówienia",
-    neededAccess: [ROLES.ADMIN]
+    neededAccess: [ROLES.OWNER]
   }
 ];
 
@@ -79,8 +75,9 @@ export const Navbar = ({ items = [] }) => {
   const [cartOpen, setCartOpen] = React.useState(false);
   const history = useHistory();
   const cartItems = useSelector(getCartItems);
+  const userDetails = useSelector(getDetails);
 
-  const access = ROLES.USER;
+  const access = userDetails && userDetails.role;
 
   const goTo = url => () => {
     history.push(url);

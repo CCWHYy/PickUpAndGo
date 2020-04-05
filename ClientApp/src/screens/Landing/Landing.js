@@ -50,6 +50,7 @@ const LandingScreen = () => {
       if (isRequestSuccessed(request)) {
           dispatch(setToken(request.data.token));
           setStorageToken(request.data.token);
+
           history.push('/shops');
       }
   }, [request]);

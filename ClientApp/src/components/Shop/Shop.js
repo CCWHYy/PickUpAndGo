@@ -50,7 +50,7 @@ export const Shop = props => {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            Ż
+              {name[0].toUpperCase()}
           </Avatar>
         }
         title={name}

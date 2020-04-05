@@ -18,12 +18,10 @@ import { ItemsList } from "../../components/ItemsList";
 import { CartItem } from "../../components/Item";
 import { getCartItems } from "../../redux/cart/selectors";
 import { getDetails } from "../../redux/store/selectors";
-import {makeOrder, setOrders} from "../../redux/orders/actions";
 import { getDetails as getUserDetails } from "../../redux/auth/selectors";
 import { setCartItems } from "../../redux/cart/actions";
 import {useFetch} from "../../hooks/useFetch";
 import {isRequestSuccessed} from "../../utils/request";
-import {setDetails} from "../../redux/auth/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -43,12 +41,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const mapItems = (items) => items.map(({ id, quantity, quantityUnit, price }) => {
+const mapItems = (items) => items.map(({ id, quantity }) => {
   return {
     id,
-    price,
     quantity,
-    quantityUnit,
   };
 });
 
@@ -71,7 +67,7 @@ export const CartScreen = ({ open, handleClose }) => {
         userId: userDetails && userDetails.id,
         storeId: storeDetails && storeDetails.id,
         products: mapItems(items),
-      })
+      }),
     },
   });
 
