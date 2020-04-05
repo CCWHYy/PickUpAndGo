@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Auth;
 using PickUpAndGo.Models.Orders;
 using PickUpAndGo.Models.Product;
 using PickUpAndGo.Persistence.Context;
@@ -41,14 +43,27 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                var userStoreId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
+
                 var order = Uow.OrderRepository.Query(p => p.Id == id, null, p => p.OrderProducts).FirstOrDefault();
+
+                if (currentUserId != order.UserId && currentUserRole == Roles.User)
+                    return Unauthorized("You can only access your orders");
+
                 if (order == null)
                     return NotFound("Order with given Id was not found!");
+
+                if (currentUserRole == Roles.Employee && order.StoreId != userStoreId)
+                {
+                    return Unauthorized("You cannot access orders from other stores!");
+                }
 
                 var productIds = order.OrderProducts.Select(x => x.ProductId).ToList();
                 var products = new List<Product>();
                 var allProducts = Uow.ProductRepository;
-
+ 
                 foreach (var productId in productIds)
                 {
                     products.Add(allProducts.Get(productId));
@@ -90,7 +105,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add product [Working]
+        /// Add order with it's products [Working]
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -137,7 +152,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Update product [Working]
+        /// Update order [Working]
         /// </summary>
         /// <returns></returns>
         [HttpPut]

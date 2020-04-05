@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PickUpAndGo.Auth;
 using PickUpAndGo.Models.Store;
 using PickUpAndGo.Persistence.Context;
 using PickUpAndGo.Persistence.Entities;
@@ -24,12 +27,13 @@ namespace PickUpAndGo.Controllers
         /// <param name="contextAccessor"></param>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public StoreController(IHttpContextAccessor contextAccessor,AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
+        public StoreController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(
+            contextAccessor, dbContext, mapper)
         {
         }
 
         /// <summary>
-        /// Get by ID [Working]
+        /// Get by ID [Roles: Public] [Working]
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(StoreModel), 200)]
@@ -58,7 +62,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get All [Working]
+        /// Get All [Roles: Public] [Working]
         /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<StoreModel>), 200)]
@@ -79,8 +83,9 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add new store [Working]
+        /// Add new store [Roles: Admin] [Working]
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(StoreModel), 201)]
         [ProducesResponseType(400)]
@@ -118,8 +123,9 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Update store [Working]
+        /// Update store [Roles: Owner, Admin] [Working]
         /// </summary>
+        [Authorize(Roles = "Owner, Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(StoreModel), 200)]
         [ProducesResponseType(400)]
@@ -129,8 +135,15 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                var currentUserStoreId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
+
                 if (string.IsNullOrWhiteSpace(updateStoreModel.Id))
                     return BadRequest("Store ID is required!");
+
+                if (currentUserRole == Roles.Owner && currentUserStoreId != updateStoreModel.Id)
+                    return Forbidden();
 
                 if (string.IsNullOrWhiteSpace(updateStoreModel.Name) ||
                     string.IsNullOrWhiteSpace(updateStoreModel.Address))
@@ -140,7 +153,7 @@ namespace PickUpAndGo.Controllers
 
                 if (getResponse == null)
                     return NotFound("Store with given ID does not exist!");
-                
+
                 var entity = Mapper.Map(updateStoreModel, getResponse);
                 var updateResponse = Uow.StoreRepository.Update(entity);
                 await Uow.CompleteAsync();
@@ -156,8 +169,9 @@ namespace PickUpAndGo.Controllers
 
 
         /// <summary>
-        /// Delete store [Working]
+        /// Delete store [Roles: Admin] [Working]
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
