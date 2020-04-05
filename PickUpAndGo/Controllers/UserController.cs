@@ -75,7 +75,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Register user [Working]
+        /// Register user [Roles: Anonymous, Owner, Admin] [Working]
         /// </summary>
         /// <param name="createUserModel"></param>
         [HttpPost]
