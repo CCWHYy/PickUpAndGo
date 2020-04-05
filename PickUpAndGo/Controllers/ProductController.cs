@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -59,7 +60,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get All [Working]
+        /// Get all if no storeId is provided [Working]
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -91,7 +92,7 @@ namespace PickUpAndGo.Controllers
         /// Add product [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
-        //[Authorize(Roles = "Employee, Owner, Admin")]
+        [Authorize(Roles = "Employee, Owner")]
         [HttpPost]
         [ProducesResponseType(typeof(ProductModel), 201)]
         [ProducesResponseType(400)]
@@ -102,6 +103,10 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
+                var storeId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
+                if (storeId == null)
+                    return BadRequest("No such store id!");
+
                 if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
                     String.IsNullOrWhiteSpace(createProductModel.Brand) ||
                     String.IsNullOrWhiteSpace(createProductModel.StoreId) ||
@@ -114,7 +119,7 @@ namespace PickUpAndGo.Controllers
                 if (createProductModel.Price <= 0)
                     return BadRequest("Price must be greater than 0");
 
-                var store = Uow.StoreRepository.Get(createProductModel.StoreId);
+                var store = Uow.StoreRepository.Get(storeId);
 
                 if (store == null)
                     return NotFound("Store with given Id was not found!");
@@ -138,6 +143,7 @@ namespace PickUpAndGo.Controllers
         /// Update product [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(ProductModel), 200)]
         [ProducesResponseType(400)]
