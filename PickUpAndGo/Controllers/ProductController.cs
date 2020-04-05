@@ -90,7 +90,7 @@ namespace PickUpAndGo.Controllers
         /// Add product [Working]
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Employee, Owner, Admin")]
+        //[Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(object), 201)]
         [ProducesResponseType(400)]
