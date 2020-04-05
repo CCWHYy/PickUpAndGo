@@ -19,7 +19,7 @@ const LoginScreen = props => {
     AsyncStorage.getItem("AUTH_TOKEN").then(token => {
       if (token) {
         navigation.reset({
-          index: 0,
+          index: 1,
           actions: [navigation.navigate("OrdersStack")]
         });
       }
