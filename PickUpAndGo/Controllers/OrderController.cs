@@ -33,7 +33,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get by ID [Working]
+        /// Get by ID [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "User, Employee, Owner, Admin")]
@@ -52,11 +52,11 @@ namespace PickUpAndGo.Controllers
 
                 var order = Uow.OrderRepository.Query(p => p.Id == id, null, p => p.OrderProducts).FirstOrDefault();
 
-                if (currentUserId != order.UserId && currentUserRole == Roles.User)
-                    return Unauthorized("You can only access your orders");
-
                 if (order == null)
                     return NotFound("Order with given Id was not found!");
+
+                if (currentUserId != order.UserId && currentUserRole == Roles.User)
+                    return Unauthorized("You can only access your orders");
 
                 if (currentUserRole == Roles.Employee && order.StoreId != userStoreId)
                 {
@@ -66,7 +66,7 @@ namespace PickUpAndGo.Controllers
                 var productIds = order.OrderProducts.Select(x => x.ProductId).ToList();
                 var products = new List<Product>();
                 var allProducts = Uow.ProductRepository;
- 
+
                 foreach (var productId in productIds)
                 {
                     products.Add(allProducts.Get(productId));
@@ -85,7 +85,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get All [Working]
+        /// Get All [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "User, Employee, Owner, Admin")]
@@ -107,12 +107,12 @@ namespace PickUpAndGo.Controllers
                 // lovely done
                 ICollection<Order> orders;
 
-                if (currentUserRole == Roles.Employee || currentUserRole == Roles.Owner) 
+                if (currentUserRole == Roles.Employee || currentUserRole == Roles.Owner)
                 {
                     orders = Uow.OrderRepository.FindAll(o => o.StoreId == userStoreId);
                 }
                 else if (currentUserRole == Roles.User)
-                { 
+                {
                     orders = Uow.OrderRepository.FindAll(o => o.UserId == currentUserId);
                 }
                 else
@@ -132,10 +132,10 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add order with it's products [Working]
+        /// Add order with it's products [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Employee, Owner, Admin")]
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(OrderModel), 201)]
         [ProducesResponseType(400)]
@@ -146,43 +146,70 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(createOrderModel.UserId) ||
-                    String.IsNullOrWhiteSpace(createOrderModel.StoreId))
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (String.IsNullOrWhiteSpace(createOrderModel.StoreId))
                 {
-                    return BadRequest("At least one of required fields are empty!");
+                    return BadRequest("Store ID is required!");
                 }
 
-                var store = Uow.StoreRepository.Get(createOrderModel.StoreId);
-                var user = Uow.UserRepository.Get(createOrderModel.UserId);
+                if (createOrderModel.Products == null || !createOrderModel.Products.Any())
+                    return BadRequest("Product list cannot be null!");
+
+                var store = Uow.StoreRepository.Query(x => x.Id == createOrderModel.StoreId, null, i => i.Products)
+                    .FirstOrDefault();
+                var user = Uow.UserRepository.Get(currentUserId);
 
                 if (user == null || store == null)
                 {
                     return NotFound("Such user or store doesn't exist!");
                 }
 
-                /////////////////////////////////
-                ///// If products available /////
-                /////////////////////////////////
-
                 var order = Mapper.Map<Order>(createOrderModel);
                 order.State = "Not ready";
                 order.TimeCreated = DateTime.UtcNow;
+                order.UserId = currentUserId;
 
+                double totalOrderValue = 0d;
+
+                var storeProducts = new List<Product>();
+                var orderProducts = new List<OrderProduct>();
                 foreach (var product in createOrderModel.Products)
                 {
-                    Uow.OrderProductRepository.Add(new OrderProduct()
+                    var storeProduct = store.Products.FirstOrDefault(x => x.Id == product.Id);
+
+                    if (storeProduct == null)
+                        return BadRequest($"Product with ID: {product.Id} does not exist!");
+
+                    if (storeProduct.Quantity < product.Quantity)
+                        return BadRequest($"You can't buy more {storeProduct.Name} than we have!");
+
+                    storeProducts.Add(storeProduct);
+                    storeProduct.Quantity = storeProduct.Quantity - product.Quantity;
+                    Uow.ProductRepository.Update(storeProduct);
+                    orderProducts.Add(new OrderProduct()
                     {
                         ProductId = product.Id,
                         Quantity = product.Quantity,
-                        OrderId = order.Id
+                        PriceEach = storeProduct.Price,
+                        QuantityUnit = storeProduct.QuantityUnit
                     });
+                    totalOrderValue += product.Quantity * storeProduct.Price;
                 }
+
+                var orderEntity = Mapper.Map<Order>(createOrderModel);
+                orderEntity.OrderProducts = orderProducts;
+                Uow.OrderRepository.Add(orderEntity);
 
                 var entity = Uow.OrderRepository.Add(order);
 
                 await Uow.CompleteAsync();
 
-                return Created(Mapper.Map<OrderModel>(entity));
+                var res = Mapper.Map<OrderModel>(entity);
+                res.Products = storeProducts.Select(Mapper.Map<ProductModel>);
+                res.TotalOrderValue = totalOrderValue;
+
+                return Created(res);
             }
             catch (Exception e)
             {
@@ -192,10 +219,10 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Update order [Working]
+        /// Update order [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "User, Employee, Owner, Admin")]
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
@@ -239,9 +266,10 @@ namespace PickUpAndGo.Controllers
 
 
         /// <summary>
-        /// Delete product [Working]
+        /// Delete product [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

@@ -14,16 +14,12 @@ const Header = ({ scene, previous, navigation }) => {
       ? options.title
       : scene.route.name;
   return (
-    <Appbar.Header theme={{ colors: { primary: theme.colors.primary.main } }}>
+    <Appbar.Header>
       {previous ? (
-        <Appbar.BackAction
-          onPress={() => navigation.goBack()}
-          color={theme.colors.primary.contrastColor}
-        />
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
       ) : (
         <Feather
           name="menu"
-          color="black"
           style={{
             marginLeft: 16
           }}

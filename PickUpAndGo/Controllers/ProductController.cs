@@ -27,7 +27,8 @@ namespace PickUpAndGo.Controllers
         /// <param name="contextAccessor"></param>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public ProductController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
+        public ProductController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(
+            contextAccessor, dbContext, mapper)
         {
         }
 
@@ -104,12 +105,12 @@ namespace PickUpAndGo.Controllers
             try
             {
                 var storeId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
+
                 if (String.IsNullOrWhiteSpace(storeId))
                     return BadRequest("No such store id!");
 
                 if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
                     String.IsNullOrWhiteSpace(createProductModel.Description) ||
-                    String.IsNullOrWhiteSpace(createProductModel.StoreId) ||
                     String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
                     String.IsNullOrWhiteSpace(createProductModel.Category))
                 {
@@ -126,6 +127,7 @@ namespace PickUpAndGo.Controllers
 
                 var product = Mapper.Map<Product>(createProductModel);
                 product.Quantity = 0;
+                product.StoreId = storeId;
 
                 var entity = Uow.ProductRepository.Add(product);
                 await Uow.CompleteAsync();

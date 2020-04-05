@@ -4,9 +4,22 @@ import { StyleSheet, Text, View } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Feather } from "@expo/vector-icons";
 
+import {
+  Button,
+  Paragraph,
+  Dialog,
+  Portal,
+  useTheme
+} from "react-native-paper";
+
 const QRScanner = props => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [packageNo, setPackageNo] = useState(false);
+
+  const { colors } = useTheme();
 
   const { navigation } = props;
 
@@ -17,9 +30,8 @@ const QRScanner = props => {
     })();
   }, []);
 
-  const handleBarCodeScanned = async () => {
+  const handleBarCodeScanned = async data => {
     setScanned(true);
-    console.log("scan handle:");
     handleScan(data);
   };
   if (hasPermission === null) {
@@ -29,9 +41,16 @@ const QRScanner = props => {
     return <Text>No access to camera</Text>;
   }
 
-  const handleScan = () => {
-    console.log("xD");
+  const handleScan = data => {
+    setPackageNo(data);
+    setConfirmVisible(true);
   };
+
+  const handleClose = () => {
+    setConfirmVisible(false);
+    navigation.pop();
+  };
+
   return (
     <View
       style={{ flex: 1, justifyContent: "flex-start", alignItems: "center" }}
@@ -65,6 +84,21 @@ const QRScanner = props => {
         </View>
         <View style={styles.topAndDownRow} />
       </BarCodeScanner>
+      <Portal>
+        <Dialog visible={confirmVisible} onDismiss={handleClose}>
+          <Dialog.Title>Kod wykryty</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>
+              Proszę wydać paczkę {packageNo} i potwierdzić poniżej.
+            </Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button color={colors.secondary} onPress={handleClose}>
+              Potwierdź
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };

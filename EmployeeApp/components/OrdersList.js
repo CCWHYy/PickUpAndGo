@@ -9,6 +9,7 @@ const OrdersList = ({ orders = [] }) => {
   return (
     <List.Section>
       {orders.map(order => {
+        order.products = order.products || [];
         const productsString =
           order.products.length === 1
             ? "produkt"

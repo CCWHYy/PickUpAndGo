@@ -13,6 +13,7 @@ namespace PickUpAndGo.Models.Orders
         public string StoreId { get; set; }
         public string State { get; set; }
         public DateTime TimeCreated { get; set; }
-        public ICollection<ProductModel> Products { get; set; }
+        public double TotalOrderValue { get; set; }
+        public IEnumerable<ProductModel> Products { get; set; }
     }
 }
