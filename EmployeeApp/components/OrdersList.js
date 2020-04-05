@@ -4,26 +4,26 @@ import { List } from "react-native-paper";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-const MyList = ({ items, justWatch }) => {
+const OrdersList = ({ orders = [] }) => {
   const navigation = useNavigation();
   return (
     <List.Section>
-      {items.map(item => {
+      {orders.map(order => {
         const productsString =
-          item.products.length === 1
+          order.products.length === 1
             ? "produkt"
-            : item.products.length < 5
+            : order.products.length < 5
             ? "produkty"
             : "produktów";
         return (
           <List.Item
-            key={item.id}
-            title={item.number}
+            key={order.id}
+            title={order.date}
+            description={`#${order.orderNumber}`}
             style={{
               justifyContent: "center",
               alignItems: "center"
             }}
-            description={item.date}
             right={() => (
               <View
                 style={{
@@ -32,19 +32,14 @@ const MyList = ({ items, justWatch }) => {
                   alignItems: "center"
                 }}
               >
-                <Text
-                  style={{
-                    color: "red"
-                  }}
-                >
-                  {`${item.products.length} ${productsString}`}
+                <Text>
+                  {order.products.length} {productsString}
                 </Text>
               </View>
             )}
             onPress={() =>
-              navigation.navigate("Products", {
-                items: item.products,
-                justWatch
+              navigation.navigate("OrderDetails", {
+                order
               })
             }
           />
@@ -53,4 +48,4 @@ const MyList = ({ items, justWatch }) => {
     </List.Section>
   );
 };
-export { MyList };
+export { OrdersList };

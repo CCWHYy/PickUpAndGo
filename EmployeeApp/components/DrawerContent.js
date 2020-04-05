@@ -9,17 +9,6 @@ const DrawerContent = ({ navigation }) => {
   return (
     <DrawerContentScrollView>
       <View style={styles.drawerContent}>
-        <View style={styles.userInfoSection}>
-          <Avatar.Image
-            source={{
-              uri:
-                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png"
-            }}
-            size={50}
-          />
-          <Title style={styles.title}>Kent C. Doods</Title>
-          <Caption style={styles.caption}>@kcd</Caption>
-        </View>
         <Drawer.Section style={styles.drawerSection}>
           <DrawerItem
             icon={({ color, size }) => (
@@ -30,39 +19,39 @@ const DrawerContent = ({ navigation }) => {
                 </Badge>
               </View>
             )}
-            label="Do wzięcia"
+            label="Nowe zamówienia"
             onPress={() => {
-              navigation.navigate("TakeOrdersStack");
+              navigation.navigate("OrdersStack");
             }}
           />
-          <DrawerItem
-            icon={({ color, size }) => (
-              <Feather
-                style={styles.icon}
-                name="check-circle"
-                color={color}
-                size={size}
-              />
-            )}
-            label="Gotowe"
-            onPress={() => {
-              navigation.navigate("ReadyOrdersStack");
-            }}
-          />
-          <DrawerItem
-            icon={({ color, size }) => (
-              <Feather
-                style={styles.icon}
-                name="archive"
-                color={color}
-                size={size}
-              />
-            )}
-            label="Archiwum"
-            onPress={() => {
-              navigation.navigate("ArchiveOrdersStack");
-            }}
-          />
+          {/* <DrawerItem */}
+          {/*   icon={({ color, size }) => ( */}
+          {/*     <Feather */}
+          {/*       style={styles.icon} */}
+          {/*       name="check-circle" */}
+          {/*       color={color} */}
+          {/*       size={size} */}
+          {/*     /> */}
+          {/*   )} */}
+          {/*   label="Gotowe" */}
+          {/*   onPress={() => { */}
+          {/*     navigation.navigate("ReadyOrdersStack"); */}
+          {/*   }} */}
+          {/* /> */}
+          {/* <DrawerItem */}
+          {/*   icon={({ color, size }) => ( */}
+          {/*     <Feather */}
+          {/*       style={styles.icon} */}
+          {/*       name="archive" */}
+          {/*       color={color} */}
+          {/*       size={size} */}
+          {/*     /> */}
+          {/*   )} */}
+          {/*   label="Archiwum" */}
+          {/*   onPress={() => { */}
+          {/*     navigation.navigate("ArchiveOrdersStack"); */}
+          {/*   }} */}
+          {/* /> */}
         </Drawer.Section>
       </View>
     </DrawerContentScrollView>
@@ -80,9 +69,6 @@ const styles = StyleSheet.create({
   },
   drawerContent: {
     flex: 1
-  },
-  userInfoSection: {
-    paddingLeft: 20
   },
   title: {
     marginTop: 20,

@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 
 import { LandingScreen } from "./screens/Landing";
+import { RegisterScreen } from "./screens/Register";
 import { CartScreen } from "./screens/Cart";
 import { OrdersListScreen } from "./screens/OrdersList";
 import { ShopScreen } from "./screens/Shop";
@@ -14,6 +15,9 @@ export const Routes = () => (
   <Switch>
     <Route path="/" exact>
       <LandingScreen />
+    </Route>
+    <Route path="/register" exact>
+      <RegisterScreen />
     </Route>
     <Route path="/cart">
       <CartScreen />

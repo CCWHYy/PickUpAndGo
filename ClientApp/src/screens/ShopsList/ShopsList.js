@@ -5,8 +5,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import { ShopsList } from "../../components/ShopsList";
+import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { getStoresList } from "../../redux/store/selectors";
 import { setStoresList } from "../../redux/store/actions";
+import { useFetch } from "../../hooks/useFetch";
+import { isRequestSuccessed } from "../../utils/request";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,56 +24,36 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const mockedShops = [
-  {
-    name: "Żabka",
-    location: "Rynek 16",
-    logoImg: "/shopLogos/zabka.jpeg",
-    description: "Godziny otwarcia"
-  },
-  {
-    name: "Żabka",
-    location: "Rynek 16",
-    logoImg: "/shopLogos/zabka.jpeg",
-    description: "Godziny otwarcia"
-  },
-  {
-    name: "Żabka",
-    location: "Rynek 16",
-    logoImg: "/shopLogos/zabka.jpeg",
-    description: "Godziny otwarcia"
-  },
-  {
-    name: "Żabka",
-    location: "Rynek 16",
-    logoImg: "/shopLogos/zabka.jpeg",
-    description: "Godziny otwarcia"
-  },
-  {
-    name: "Żabka",
-    location: "Rynek 16",
-    logoImg: "/shopLogos/zabka.jpeg",
-    description: "Godziny otwarcia"
-  }
-];
-
 export const ShopsListScreen = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const shopsList = useSelector(getStoresList);
 
+  const [request, makeRequest, clearRequest] = useFetch({
+    url: '/api/stores',
+  });
+
   useEffect(() => {
-    dispatch(setStoresList(mockedShops));
-  }, [dispatch]);
+    makeRequest();
+  }, []);
+
+  useEffect(() => {
+    if (isRequestSuccessed(request)) {
+      dispatch(setStoresList(request.data));
+      clearRequest();
+    }
+  }, [request]);
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" component="h3" className={classes.header}>
-        Sklepy w twojej okolicy
-      </Typography>
-      <ShopsList shops={shopsList} />
-    </div>
-  );
+      <ProtectedComponent>
+        <div className={classes.root}>
+          <Typography variant="h4" component="h3" className={classes.header}>
+            Sklepy w twojej okolicy
+          </Typography>
+          <ShopsList shops={shopsList} />
+        </div>
+      </ProtectedComponent>
+    );
 };
 
 export default ShopsListScreen;

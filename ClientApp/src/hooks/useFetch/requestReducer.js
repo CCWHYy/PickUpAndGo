@@ -1,3 +1,4 @@
+const CLEANUP = "CLEANUP";
 const REQUEST = "REQUEST";
 const SUCCESS = "SUCCESS";
 const FAILURE = "FAILURE";
@@ -5,7 +6,8 @@ const FAILURE = "FAILURE";
 const types = {
   REQUEST,
   SUCCESS,
-  FAILURE
+  FAILURE,
+  CLEANUP,
 };
 
 const initialState = {
@@ -34,6 +36,8 @@ const reducer = (state, action) => {
         pending: false,
         data: action.payload
       };
+    case types.CLEANUP:
+      return initialState;
     default:
       return state;
   }

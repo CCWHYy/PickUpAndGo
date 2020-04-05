@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getStoreItems } from "../../redux/store/selectors";
 import { setStoreItems } from "../../redux/store/actions";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import { ProtectedComponent } from "../../components/ProtectedComponent";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -68,40 +69,42 @@ export const AdminStoreProductsScreen = () => {
   const handleSnackbarClose = () => makeSnackbarOpen(false);
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" component="h3" className={classes.header}>
-        Twoje produkty
-      </Typography>
-      <Card className={classes.form}>
-        <Typography variant="h5" component="h5" className={classes.header}>
-          Dodaj produkt
-        </Typography>
-        <TextField label="Nazwa produktu" color="secondary" />
-        <TextField label="Opis produktu (opcjonalnie)" color="secondary" />
-        <TextField type="number" label="Ilość" color="secondary" />
-        <TextField type="number" label="Cena" color="secondary" />
-        <Button
-          href=""
-          color="secondary"
-          variant="contained"
-          className={classes.addProduct}
-          onClick={handleAddItem}
-        >
-          Dodaj
-        </Button>
-      </Card>
-      <ItemsList items={storeItems} ItemComponent={AdminItem} />
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left"
-        }}
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message="Zaktualizowano liste produktów"
-      />
-    </div>
+      <ProtectedComponent>
+        <div className={classes.root}>
+          <Typography variant="h4" component="h3" className={classes.header}>
+            Twoje produkty
+          </Typography>
+          <Card className={classes.form}>
+            <Typography variant="h5" component="h5" className={classes.header}>
+              Dodaj produkt
+            </Typography>
+            <TextField label="Nazwa produktu" color="secondary" />
+            <TextField label="Opis produktu (opcjonalnie)" color="secondary" />
+            <TextField type="number" label="Ilość" color="secondary" />
+            <TextField type="number" label="Cena" color="secondary" />
+            <Button
+              href=""
+              color="secondary"
+              variant="contained"
+              className={classes.addProduct}
+              onClick={handleAddItem}
+            >
+              Dodaj
+            </Button>
+          </Card>
+          <ItemsList items={storeItems} ItemComponent={AdminItem} />
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left"
+            }}
+            open={isSnackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            message="Zaktualizowano liste produktów"
+          />
+        </div>
+      </ProtectedComponent>
   );
 };
 

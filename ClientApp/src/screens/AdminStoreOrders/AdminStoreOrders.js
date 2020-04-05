@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { OrdersList } from "../../components/OrdersList";
 // import { getOrdersList } from "../../redux/orders/selectors";
+import { ProtectedComponent } from "../../components/ProtectedComponent";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,12 +37,14 @@ export const AdminStoreOrdersScreen = () => {
   // const orders = useSelector(getOrdersList);
 
   return (
-    <div className={classes.root}>
-      <Typography variant="h4" component="h3" className={classes.header}>
-        Twoje zamówienia
-      </Typography>
-      <OrdersList orders={order} />
-    </div>
+      <ProtectedComponent>
+        <div className={classes.root}>
+          <Typography variant="h4" component="h3" className={classes.header}>
+            Twoje zamówienia
+          </Typography>
+          <OrdersList orders={order} />
+        </div>
+      </ProtectedComponent>
   );
 };
 
