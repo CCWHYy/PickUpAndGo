@@ -18,7 +18,8 @@ import {
   AccountCircle,
   Menu,
   ShoppingCart,
-  Storefront
+  Storefront,
+  ExitToApp
 } from "@material-ui/icons";
 
 import { CartScreen } from "../../screens/Cart";
@@ -135,6 +136,14 @@ export const Navbar = ({ items = [] }) => {
                 <ListItemText primary={text} />
               </ListItem>
             ) : null
+          )}
+          {access !== ROLES.ANON && (
+            <ListItem button onClick={() => localStorage.removeItem("token")}>
+              <ListItemIcon>
+                <ExitToApp />
+              </ListItemIcon>
+              <ListItemText primary="Wyloguj się" />
+            </ListItem>
           )}
         </List>
       </Drawer>
