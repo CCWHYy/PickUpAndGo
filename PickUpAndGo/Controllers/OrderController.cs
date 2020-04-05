@@ -105,22 +105,40 @@ namespace PickUpAndGo.Controllers
                 userStoreId = String.IsNullOrWhiteSpace(userStoreId) ? "" : userStoreId;
 
                 // lovely done
-                ICollection<Order> orders;
+                List<Order> orders;
 
                 if (currentUserRole == Roles.Employee || currentUserRole == Roles.Owner)
                 {
-                    orders = Uow.OrderRepository.FindAll(o => o.StoreId == userStoreId);
+                    orders = Uow.OrderRepository.Query(o => o.StoreId == userStoreId, null, i => i.OrderProducts)
+                        .ToList();
                 }
                 else if (currentUserRole == Roles.User)
                 {
-                    orders = Uow.OrderRepository.FindAll(o => o.UserId == currentUserId);
+                    orders = Uow.OrderRepository.Query(o => o.UserId == currentUserId, null, i => i.OrderProducts)
+                        .ToList();
                 }
                 else
                 {
-                    orders = Uow.OrderRepository.GetAll();
+                    orders = Uow.OrderRepository.Query(x => x.Id != null, null, i => i.OrderProducts).ToList();
                 }
 
-                var orderModels = orders.Select(Mapper.Map<OrderModel>);
+                var orderModels = new List<OrderModel>();
+
+                foreach (var order in orders)
+                {
+                    var productIds = order.OrderProducts.Select(x => x.ProductId);
+                    var products = new List<Product>();
+                    foreach (var productId in productIds)
+                    {
+                        var product = Uow.ProductRepository.Get(productId);
+                        if (product != null)
+                            products.Add(product);
+                    }
+
+                    var orderModel = Mapper.Map<OrderModel>(order);
+                    orderModel.Products = products.Select(Mapper.Map<ProductModel>);
+                    orderModels.Add(orderModel);
+                }
 
                 return Ok(orderModels);
             }
