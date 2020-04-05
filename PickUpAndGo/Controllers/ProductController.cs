@@ -111,8 +111,7 @@ namespace PickUpAndGo.Controllers
 
                 if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
                     String.IsNullOrWhiteSpace(createProductModel.Description) ||
-                    String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
-                    String.IsNullOrWhiteSpace(createProductModel.Category))
+                    String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) )
                 {
                     return BadRequest("At least one of required fields are empty!");
                 }
@@ -158,8 +157,7 @@ namespace PickUpAndGo.Controllers
                 if (String.IsNullOrWhiteSpace(updateProductModel.Name) ||
                     String.IsNullOrWhiteSpace(updateProductModel.Description) ||
                     String.IsNullOrWhiteSpace(updateProductModel.StoreId) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.QuantityUnit) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.Category))
+                    String.IsNullOrWhiteSpace(updateProductModel.QuantityUnit))
                 {
                     return BadRequest("At least one of required fields are empty!");
                 }
