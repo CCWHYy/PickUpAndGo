@@ -9,6 +9,7 @@ import { getOrdersList } from "../../redux/orders/selectors";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import {useFetch} from "../../hooks/useFetch";
 import {setOrders} from "../../redux/orders/actions";
+import {isRequestSuccessed} from "../../utils/request";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,6 +23,21 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 16
   }
 }));
+
+const mapOrders = (orders, stores) => {
+  return orders.map(({ state, storeId, products }) => {
+      const store = stores.find(({ id }) => id === storeId);
+
+      return {
+        state,
+        storeName: store.name,
+        orderStatus: state,
+        orderDate: '',
+        orderPrice: '',
+        items: products,
+      };
+    })
+};
 
 export const OrdersListScreen = () => {
   const classes = useStyles();
@@ -40,9 +56,11 @@ export const OrdersListScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (!ordersRequest.error && !ordersRequest.pending && ordersRequest.data) {
-      dispatch(setOrders(ordersRequest.data));
+    if (isRequestSuccessed(ordersRequest) && isRequestSuccessed(storesRequest)) {
+
+      dispatch(setOrders(mapOrders(ordersRequest.data, storesRequest.data)));
       clearOrdersRequest();
+      clearStoresRequest();
     }
   }, [ordersRequest]);
 
