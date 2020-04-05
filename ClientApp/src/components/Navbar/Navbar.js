@@ -138,7 +138,13 @@ export const Navbar = ({ items = [] }) => {
             ) : null
           )}
           {access !== ROLES.ANON && (
-            <ListItem button onClick={() => localStorage.removeItem("token")}>
+            <ListItem
+              button
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.reload();
+              }}
+            >
               <ListItemIcon>
                 <ExitToApp />
               </ListItemIcon>
