@@ -25,6 +25,7 @@ namespace PickUpAndGo.Persistence
             UserRepository = new UserRepository(context);
             StoreRepository = new StoreRepository(context);
             ProductRepository = new ProductRepository(context);
+            OrderRepository = new OrderRepository(context);
         }
 
         public void Dispose()

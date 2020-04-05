@@ -122,6 +122,7 @@ namespace PickUpAndGo.Controllers
                 /////////////////////////////////
 
                 var order = Mapper.Map<Order>(createOrderModel);
+                order.State = "Not ready";
 
                 var entity = Uow.OrderRepository.Add(order);
                 await Uow.CompleteAsync();
