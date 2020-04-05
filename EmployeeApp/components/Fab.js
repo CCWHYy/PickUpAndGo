@@ -8,12 +8,12 @@ const Fab = ({ onPress }) => {
     <FAB
       icon="camera"
       onPress={onPress}
-      color={colors.primary.contrastText}
+      color="#000000"
       style={{
         position: "absolute",
         bottom: 50,
         right: 16,
-        backgroundColor: colors.primary.main
+        backgroundColor: colors.primary
       }}
     />
   );

@@ -11,7 +11,7 @@ const OrderDetails = ({ route }) => {
   const { colors } = useTheme();
 
   const [products, setProducts] = useState(
-    order.products.map(p => ({ ...p, found: false }))
+    (order.products || []).map(p => ({ ...p, found: false }))
   );
   const modifyProduct = id => {
     setProducts(state =>
