@@ -13,6 +13,7 @@ namespace PickUpAndGo.Persistence.Entities
         public string PostalCode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string LogoUrl { get; set; }
 
         public ICollection<Product> Products { get; set; }
         public ICollection<StoreOrder> StoreOrders { get; set; }
