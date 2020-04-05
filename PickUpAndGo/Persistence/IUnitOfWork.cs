@@ -1,4 +1,5 @@
 ﻿using PickUpAndGo.Persistence.Repositories.Orders;
+using PickUpAndGo.Persistence.Repositories.OrdersProducts;
 using PickUpAndGo.Persistence.Repositories.Products;
 using PickUpAndGo.Persistence.Repositories.Stores;
 using PickUpAndGo.Persistence.Repositories.Users;
@@ -15,6 +16,7 @@ namespace PickUpAndGo.Persistence
         IStoreRepository StoreRepository { get; }
         IProductRepository ProductRepository { get; }
         IOrderRepository OrderRepository { get; }
+        IOrderProductRepository OrderProductRepository { get; }
 
         Task<int> CompleteAsync();
     }

@@ -104,11 +104,11 @@ namespace PickUpAndGo.Controllers
             try
             {
                 var storeId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
-                if (storeId == null)
+                if (String.IsNullOrWhiteSpace(storeId))
                     return BadRequest("No such store id!");
 
                 if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
-                    String.IsNullOrWhiteSpace(createProductModel.Brand) ||
+                    String.IsNullOrWhiteSpace(createProductModel.Description) ||
                     String.IsNullOrWhiteSpace(createProductModel.StoreId) ||
                     String.IsNullOrWhiteSpace(createProductModel.QuantityUnit) ||
                     String.IsNullOrWhiteSpace(createProductModel.Category))
@@ -154,7 +154,7 @@ namespace PickUpAndGo.Controllers
             try
             {
                 if (String.IsNullOrWhiteSpace(updateProductModel.Name) ||
-                    String.IsNullOrWhiteSpace(updateProductModel.Brand) ||
+                    String.IsNullOrWhiteSpace(updateProductModel.Description) ||
                     String.IsNullOrWhiteSpace(updateProductModel.StoreId) ||
                     String.IsNullOrWhiteSpace(updateProductModel.QuantityUnit) ||
                     String.IsNullOrWhiteSpace(updateProductModel.Category))

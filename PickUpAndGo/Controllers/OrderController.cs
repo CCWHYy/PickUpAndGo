@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PickUpAndGo.Auth;
@@ -35,6 +36,7 @@ namespace PickUpAndGo.Controllers
         /// Get by ID [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
@@ -86,6 +88,7 @@ namespace PickUpAndGo.Controllers
         /// Get All [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<OrderModel>), 200)]
         [ProducesResponseType(500)]
@@ -93,8 +96,31 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                var order = Uow.OrderRepository.GetAll();
-                var orderModels = order.Select(Mapper.Map<OrderModel>);
+                //TODO wszystkie zamowienia w sklepie employee i owner a user tylko swoje a admin wszystkie
+
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                var userStoreId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
+
+                userStoreId = String.IsNullOrWhiteSpace(userStoreId) ? "" : userStoreId;
+
+                // lovely done
+                ICollection<Order> orders;
+
+                if (currentUserRole == Roles.Employee || currentUserRole == Roles.Owner) 
+                {
+                    orders = Uow.OrderRepository.FindAll(o => o.StoreId == userStoreId);
+                }
+                else if (currentUserRole == Roles.User)
+                { 
+                    orders = Uow.OrderRepository.FindAll(o => o.UserId == currentUserId);
+                }
+                else
+                {
+                    orders = Uow.OrderRepository.GetAll();
+                }
+
+                var orderModels = orders.Select(Mapper.Map<OrderModel>);
 
                 return Ok(orderModels);
             }
@@ -109,6 +135,7 @@ namespace PickUpAndGo.Controllers
         /// Add order with it's products [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(OrderModel), 201)]
         [ProducesResponseType(400)]
@@ -140,7 +167,19 @@ namespace PickUpAndGo.Controllers
                 var order = Mapper.Map<Order>(createOrderModel);
                 order.State = "Not ready";
                 order.TimeCreated = DateTime.UtcNow;
+
+                foreach (var product in createOrderModel.Products)
+                {
+                    Uow.OrderProductRepository.Add(new OrderProduct()
+                    {
+                        ProductId = product.Id,
+                        Quantity = product.Quantity,
+                        OrderId = order.Id
+                    });
+                }
+
                 var entity = Uow.OrderRepository.Add(order);
+
                 await Uow.CompleteAsync();
 
                 return Created(Mapper.Map<OrderModel>(entity));
@@ -156,6 +195,7 @@ namespace PickUpAndGo.Controllers
         /// Update order [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
@@ -182,7 +222,6 @@ namespace PickUpAndGo.Controllers
                 {
                     return NotFound("Such user or store doesn't exist!");
                 }
-
 
                 var entity = Mapper.Map(updateOrderModel, order);
                 var updatedOrder = Uow.OrderRepository.Update(entity);
