@@ -26,6 +26,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const mapItems = (items) => items.map(({ id, name, brand, quantity, quantityUnit, price }) => ({
+  name,
+  price,
+  description: brand,
+  id,
+  quantity: quantity,
+  quantityUnit,
+}));
+
 export const ShopScreen = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -47,7 +56,7 @@ export const ShopScreen = () => {
 
   useEffect(() => {
     if (isRequestSuccessed(request)) {
-      dispatch(setStoreItems(request.data));
+      dispatch(setStoreItems(mapItems(request.data)));
       clearRequest();
     }
   }, [request]);

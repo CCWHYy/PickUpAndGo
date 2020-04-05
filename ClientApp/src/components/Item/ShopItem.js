@@ -29,7 +29,7 @@ export const ShopItem = props => {
   const [details, makeDetails] = useState({});
   const [isSnackbarOpen, makeSnackbarOpen] = useState(false);
   const dispatch = useDispatch();
-  const { name, price, description, id, quantity = 1 } = props;
+  const { name, price, description, id, quantity = 1, quantityUnit } = props;
 
   useEffect(() => {
     makeDetails({
@@ -37,9 +37,10 @@ export const ShopItem = props => {
       price,
       description,
       id,
-      quantity
+      quantity,
+      quantityUnit,
     });
-  }, [name, price, description, id, quantity]);
+  }, [name, price, description, id, quantity, quantityUnit]);
 
   const addItemsToCart = () => {
     dispatch(addItemToCart(details));
@@ -69,6 +70,7 @@ export const ShopItem = props => {
             className={classes.quantity}
             onChange={updateQuantity}
           />
+          {quantityUnit}
           <IconButton
             edge="end"
             aria-label="comments"

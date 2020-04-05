@@ -41,7 +41,7 @@ export const Item = ({
         className={classes.inline}
         color="textPrimary"
       >
-        {price}
+        {price} zł
       </Typography>
       {ContentAfter}
     </ListItem>

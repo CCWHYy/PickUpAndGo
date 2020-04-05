@@ -26,7 +26,7 @@ export const ItemsList = ({ items = [], ItemComponent }) => {
         Lista produktów
       </Typography>
       <List>
-        {items.map(item => (
+        {items && items.map(item => (
           <React.Fragment>
             <ItemComponent {...item} />
             <Divider variant="middle" component="li" />
