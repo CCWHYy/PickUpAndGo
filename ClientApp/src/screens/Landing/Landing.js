@@ -174,7 +174,7 @@ const LandingScreen = () => {
             open={isErrorSnackbarOpen}
             autoHideDuration={6000}
             onClose={ handleCloseErrorSnackbar }
-            message='Rejestracja nie udała się'
+            message='Logowanie nie udał się'
         />
     </Container>
   );
