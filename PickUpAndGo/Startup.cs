@@ -26,6 +26,7 @@ namespace PickUpAndGo
             Configuration = configuration;
         }
 
+        readonly string customOriginPolicy = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -34,7 +35,16 @@ namespace PickUpAndGo
             // Map appsettings.json to AppSettings class
             var config = Configuration.Get<AppSettings>();
             services.Configure<AppSettings>(Configuration);
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(customOriginPolicy,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyHeader();
+                        builder.AllowAnyMethod();
+                    });
+            });
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new OpenApiInfo()
@@ -110,6 +120,7 @@ namespace PickUpAndGo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(customOriginPolicy);
             try
             {
                 using var serviceScope = app.ApplicationServices.CreateScope();

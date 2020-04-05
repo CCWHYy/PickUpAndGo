@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(ProductModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -62,7 +63,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
         [ProducesResponseType(500)]
         public IActionResult GetAll([FromQuery] string storeId)
         {
@@ -87,12 +88,12 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add product [Working]
+        /// Add product [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Employee, Owner, Admin")]
+        //[Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPost]
-        [ProducesResponseType(typeof(object), 201)]
+        [ProducesResponseType(typeof(ProductModel), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
@@ -138,7 +139,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(ProductModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
