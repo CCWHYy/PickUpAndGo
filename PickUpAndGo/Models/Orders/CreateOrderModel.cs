@@ -9,7 +9,6 @@ namespace PickUpAndGo.Models.Orders
 {
     public class CreateOrderModel
     {
-        public string UserId { get; set; }
         public string StoreId { get; set; }
         public ICollection<CreateOrderProductModel> Products { get; set; }
     }
