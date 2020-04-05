@@ -33,7 +33,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get by ID [Working]
+        /// Get by ID [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "User, Employee, Owner, Admin")]
@@ -52,11 +52,11 @@ namespace PickUpAndGo.Controllers
 
                 var order = Uow.OrderRepository.Query(p => p.Id == id, null, p => p.OrderProducts).FirstOrDefault();
 
-                if (currentUserId != order.UserId && currentUserRole == Roles.User)
-                    return Unauthorized("You can only access your orders");
-
                 if (order == null)
                     return NotFound("Order with given Id was not found!");
+
+                if (currentUserId != order.UserId && currentUserRole == Roles.User)
+                    return Unauthorized("You can only access your orders");
 
                 if (currentUserRole == Roles.Employee && order.StoreId != userStoreId)
                 {
@@ -85,7 +85,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get All [Working]
+        /// Get All [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "User, Employee, Owner, Admin")]
@@ -132,7 +132,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add order with it's products [Working]
+        /// Add order with it's products [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "User, Employee, Owner, Admin")]
@@ -219,10 +219,10 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Update order [Working]
+        /// Update order [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "User, Employee, Owner, Admin")]
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
@@ -266,9 +266,10 @@ namespace PickUpAndGo.Controllers
 
 
         /// <summary>
-        /// Delete product [Working]
+        /// Delete product [Roles: Employee, Owner, Admin] [Working]
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Employee, Owner, Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
