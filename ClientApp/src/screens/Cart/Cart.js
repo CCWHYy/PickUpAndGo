@@ -19,8 +19,11 @@ import { CartItem } from "../../components/Item";
 import { getCartItems } from "../../redux/cart/selectors";
 import { getDetails } from "../../redux/store/selectors";
 import {makeOrder, setOrders} from "../../redux/orders/actions";
+import { getDetails as getUserDetails } from "../../redux/auth/selectors";
 import { setCartItems } from "../../redux/cart/actions";
 import {useFetch} from "../../hooks/useFetch";
+import {isRequestSuccessed} from "../../utils/request";
+import {setDetails} from "../../redux/auth/actions";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -40,6 +43,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const mapItems = (items) => items.map(({ id, quantity, quantityUnit, price }) => {
+  return {
+    id,
+    price,
+    quantity,
+    quantityUnit,
+  };
+});
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -50,24 +62,29 @@ export const CartScreen = ({ open, handleClose }) => {
   const history = useHistory();
   const items = useSelector(getCartItems);
   const storeDetails = useSelector(getDetails);
+  const userDetails = useSelector(getUserDetails);
+  const [request, makeRequest] = useFetch({
+    url: '/api/orders',
+    options: {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: userDetails && userDetails.id,
+        storeId: storeDetails && storeDetails.id,
+        products: mapItems(items),
+      })
+    },
+  });
 
-  const handleMakeOrder = () => {
-    const order = {
-      store: storeDetails,
-      storeName: storeDetails.name,
-      orderStatus: "W trakcie realizacji",
-      orderDate: "03.04.2020",
-      orderPrice: "58.80 PLN",
-      items,
-      qrCode: "/shopLogos/zabka.jpeg"
-    };
+  useEffect(() => {
+    if (isRequestSuccessed(request)) {
+      dispatch(setCartItems());
 
-    dispatch(makeOrder(order));
-    dispatch(setCartItems());
+      history.push("/orders");
+      handleClose();
+    }
+  }, [request]);
 
-    history.push("/orders");
-    handleClose();
-  };
+  const handleMakeOrder = () => makeRequest();
 
   return (
         <Dialog

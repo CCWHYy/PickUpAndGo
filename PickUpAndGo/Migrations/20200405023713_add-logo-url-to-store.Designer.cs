@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PickUpAndGo.Persistence.Context;
 
 namespace PickUpAndGo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200405023713_add-logo-url-to-store")]
+    partial class addlogourltostore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,10 +78,10 @@ namespace PickUpAndGo.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<string>("Category")
+                    b.Property<string>("Brand")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
