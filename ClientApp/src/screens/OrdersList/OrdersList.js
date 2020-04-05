@@ -25,14 +25,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const mapOrders = (orders, stores) => {
-  return orders.map(({ state, storeId, products }) => {
+  return orders.map(({ timeCreated, id, state, storeId, products }) => {
       const store = stores.find(({ id }) => id === storeId);
 
       return {
+        orderId: id,
         state,
         storeName: store.name,
         orderStatus: state,
-        orderDate: '',
+        orderDate: new Date(timeCreated).toDateString(),
         orderPrice: '',
         items: products,
       };
@@ -57,8 +58,8 @@ export const OrdersListScreen = () => {
 
   useEffect(() => {
     if (isRequestSuccessed(ordersRequest) && isRequestSuccessed(storesRequest)) {
-
       dispatch(setOrders(mapOrders(ordersRequest.data, storesRequest.data)));
+
       clearOrdersRequest();
       clearStoresRequest();
     }
