@@ -37,8 +37,8 @@ export const ShopItem = props => {
       price,
       description,
       id,
-      quantity,
-      quantityUnit,
+      quantity: 0,
+      quantityUnit
     });
   }, [name, price, description, id, quantity, quantityUnit]);
 

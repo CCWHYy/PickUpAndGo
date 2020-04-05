@@ -184,7 +184,7 @@ namespace PickUpAndGo.Controllers
                 }
 
                 var order = Mapper.Map<Order>(createOrderModel);
-                order.State = "Not ready";
+                order.State = "Zamowienie przyjete!";
                 order.TimeCreated = DateTime.UtcNow;
                 order.UserId = currentUserId;
 
