@@ -33,7 +33,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -71,7 +71,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(IEnumerable<OrderModel>), 200)]
         [ProducesResponseType(500)]
         public IActionResult GetAll()
         {
@@ -94,7 +94,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(object), 201)]
+        [ProducesResponseType(typeof(OrderModel), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(409)]
@@ -140,7 +140,7 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(object), 200)]
+        [ProducesResponseType(typeof(OrderModel), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
