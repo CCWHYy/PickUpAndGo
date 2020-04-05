@@ -8,6 +8,7 @@ import { ShopsList } from "../../components/ShopsList";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { getStoresList } from "../../redux/store/selectors";
 import { setStoresList } from "../../redux/store/actions";
+import { setCartItems } from "../../redux/cart/actions";
 import { useFetch } from "../../hooks/useFetch";
 import { isRequestSuccessed } from "../../utils/request";
 
@@ -35,6 +36,7 @@ export const ShopsListScreen = () => {
 
   useEffect(() => {
     makeRequest();
+    dispatch(setCartItems());
   }, []);
 
   useEffect(() => {
