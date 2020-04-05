@@ -284,7 +284,8 @@ namespace PickUpAndGo.Controllers
         {
             try
             {
-                return Ok(_appSettings.Environment);
+                var allUser = Uow.UserRepository.GetAll();
+                return Ok(allUser);
             }
             catch (Exception e)
             {
