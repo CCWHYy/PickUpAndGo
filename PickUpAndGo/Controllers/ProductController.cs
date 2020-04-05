@@ -90,7 +90,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Add product [Roles: Employee, Owner, Admin] [Working]
+        /// Add product [Roles: Employee, Owner] [Working]
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Employee, Owner")]
