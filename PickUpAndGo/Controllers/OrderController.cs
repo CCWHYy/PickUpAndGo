@@ -24,7 +24,8 @@ namespace PickUpAndGo.Controllers
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public OrderController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(contextAccessor, dbContext, mapper)
+        public OrderController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper) : base(
+            contextAccessor, dbContext, mapper)
         {
         }
 
@@ -123,7 +124,7 @@ namespace PickUpAndGo.Controllers
 
                 var order = Mapper.Map<Order>(createOrderModel);
                 order.State = "Not ready";
-
+                order.TimeCreated = DateTime.UtcNow;
                 var entity = Uow.OrderRepository.Add(order);
                 await Uow.CompleteAsync();
 
