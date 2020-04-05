@@ -1,5 +1,5 @@
-import { AsyncStorage, StyleSheet, View } from "react-native";
-import { Button, List, useTheme } from "react-native-paper";
+import { Alert, AsyncStorage, StyleSheet, View } from "react-native";
+import { Button, Dialog, List, Portal, useTheme } from "react-native-paper";
 import React, { useState } from "react";
 
 import { ProductItem } from "../components/ProductItem";
@@ -12,6 +12,7 @@ const OrderDetails = ({ route }) => {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
+  const [confirmVisible, setConfirmVisible] = useState(false);
   const [products, setProducts] = useState(
     (order.products || []).map((p) => ({ ...p, found: false }))
   );
@@ -65,7 +66,12 @@ const OrderDetails = ({ route }) => {
               .then((r) => r.json())
               .then((json) => console.log(json))
           );
-          navigation.navigate("Orders");
+          Alert.alert(
+            "Sukces",
+            "Klient został powiadomiony",
+            [{ text: "OK", onPress: () => navigation.navigate("Orders") }],
+            { cancelable: false }
+          );
         }}
         style={{
           maxWidth: "80%",
