@@ -1,7 +1,7 @@
 import { Avatar, Badge, Caption, Drawer, Title } from "react-native-paper";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { AsyncStorage, StyleSheet, View } from "react-native";
 
 import { Feather } from "@expo/vector-icons";
 
@@ -38,20 +38,21 @@ const DrawerContent = ({ navigation }) => {
           {/*     navigation.navigate("ReadyOrdersStack"); */}
           {/*   }} */}
           {/* /> */}
-          {/* <DrawerItem */}
-          {/*   icon={({ color, size }) => ( */}
-          {/*     <Feather */}
-          {/*       style={styles.icon} */}
-          {/*       name="archive" */}
-          {/*       color={color} */}
-          {/*       size={size} */}
-          {/*     /> */}
-          {/*   )} */}
-          {/*   label="Archiwum" */}
-          {/*   onPress={() => { */}
-          {/*     navigation.navigate("ArchiveOrdersStack"); */}
-          {/*   }} */}
-          {/* /> */}
+          <DrawerItem
+            icon={({ color, size }) => (
+              <Feather
+                style={styles.icon}
+                name="log-out"
+                color={color}
+                size={size}
+              />
+            )}
+            label="Wyloguj"
+            onPress={async () => {
+              AsyncStorage.removeItem("AUTH_TOKEN");
+              navigation.navigate("LoginScreen");
+            }}
+          />
         </Drawer.Section>
       </View>
     </DrawerContentScrollView>
