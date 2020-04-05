@@ -34,7 +34,6 @@ namespace PickUpAndGo.Controllers
         /// <param name="contextAccessor"></param>
         public CustomControllerBase(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper)
         {
-            contextAccessor.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             DbContext = dbContext;
             Mapper = mapper;
             Uow = new UnitOfWork(dbContext);
