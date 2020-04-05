@@ -9,6 +9,7 @@ import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { getStoresList } from "../../redux/store/selectors";
 import { setStoresList } from "../../redux/store/actions";
 import { useFetch } from "../../hooks/useFetch";
+import { isRequestSuccessed } from "../../utils/request";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,7 +38,7 @@ export const ShopsListScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (!request.error && !request.pending && request.data) {
+    if (isRequestSuccessed(request)) {
       dispatch(setStoresList(request.data));
       clearRequest();
     }

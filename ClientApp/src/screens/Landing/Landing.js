@@ -15,6 +15,7 @@ import {useFetch} from "../../hooks/useFetch";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import { setToken } from "../../redux/auth/actions";
 import { setStorageToken } from "../../utils/localStorage";
+import {isRequestSuccessed} from "../../utils/request";
 
 const LandingScreen = () => {
   const [open, setOpen] = useState(false);
@@ -46,7 +47,7 @@ const LandingScreen = () => {
           makeErrorSnackbarOpen(true);
           clearRequest();
       }
-      if (!request.error && !request.pending && request.data) {
+      if (isRequestSuccessed(request)) {
           dispatch(setToken(request.data.token));
           setStorageToken(request.data.token);
           history.push('/shops');

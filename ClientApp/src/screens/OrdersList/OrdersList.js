@@ -27,20 +27,24 @@ export const OrdersListScreen = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const orders = useSelector(getOrdersList);
-  const [request, makeRequest, clearRequest] = useFetch({
+  const [ordersRequest, makeOrdersRequest, clearOrdersRequest] = useFetch({
     url: '/api/orders',
+  });
+  const [storesRequest, makeStoresRequest, clearStoresRequest] = useFetch({
+    url: '/api/stores',
   });
 
   useEffect(() => {
-    makeRequest();
+    makeOrdersRequest();
+    makeStoresRequest();
   }, []);
 
   useEffect(() => {
-    if (!request.error && !request.pending && request.data) {
-      dispatch(setOrders(request.data));
-      clearRequest();
+    if (!ordersRequest.error && !ordersRequest.pending && ordersRequest.data) {
+      dispatch(setOrders(ordersRequest.data));
+      clearOrdersRequest();
     }
-  }, [request]);
+  }, [ordersRequest]);
 
   return (
       <ProtectedComponent>

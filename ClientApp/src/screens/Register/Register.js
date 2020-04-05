@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 
 import { useFetch } from "../../hooks/useFetch";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+import {isRequestSuccessed} from "../../utils/request";
 
 
 export const RegisterScreen = () => {
@@ -36,7 +37,7 @@ export const RegisterScreen = () => {
         makeErrorSnackbarOpen(true);
         clearRequest();
     }
-    if (!request.error && !request.pending && request.data) {
+    if (isRequestSuccessed(request)) {
         // TODO: perform login here
         history.push('/');
     }

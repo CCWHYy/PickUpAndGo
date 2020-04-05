@@ -10,6 +10,7 @@ import {setStoreItems} from "../../redux/store/actions";
 import { getStoreItems, getDetails } from "../../redux/store/selectors";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import {useFetch} from "../../hooks/useFetch";
+import { isRequestSuccessed } from "../../utils/request";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,7 +46,7 @@ export const ShopScreen = () => {
   }, [details]);
 
   useEffect(() => {
-    if (!request.error && !request.pending && request.data) {
+    if (isRequestSuccessed(request)) {
       dispatch(setStoreItems(request.data));
       clearRequest();
     }
