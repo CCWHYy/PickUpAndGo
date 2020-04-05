@@ -229,7 +229,10 @@ namespace PickUpAndGo.Controllers
 
                     if (!passCheck.Verified)
                         return Unauthorized("Given email or password is incorrect!");
-
+                    
+                    if (user.StoreId == null)
+                        user.StoreId = string.Empty;
+                    
                     var jwtToken = _jwtHandler.Create(user.Id, user.Role, user.StoreId);
                     return Ok(jwtToken);
                 }
