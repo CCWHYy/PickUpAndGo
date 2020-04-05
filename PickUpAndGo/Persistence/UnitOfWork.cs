@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using PickUpAndGo.Persistence.Repositories.Products;
 using PickUpAndGo.Persistence.Repositories.Stores;
 using PickUpAndGo.Persistence.Repositories.Orders;
+using PickUpAndGo.Persistence.Repositories.OrdersProducts;
 
 namespace PickUpAndGo.Persistence
 {
@@ -19,6 +20,8 @@ namespace PickUpAndGo.Persistence
         public IProductRepository ProductRepository { get; private set; }
         public IOrderRepository OrderRepository { get; private set; }
 
+        public IOrderProductRepository OrderProductRepository { get; private set; }
+
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
@@ -26,6 +29,7 @@ namespace PickUpAndGo.Persistence
             StoreRepository = new StoreRepository(context);
             ProductRepository = new ProductRepository(context);
             OrderRepository = new OrderRepository(context);
+            OrderProductRepository = new OrderProductRepository(context);
         }
 
         public void Dispose()
