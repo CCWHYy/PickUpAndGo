@@ -1,18 +1,17 @@
+import { AsyncStorage, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Dialog,
+  Paragraph,
+  Portal,
+  useTheme,
+} from "react-native-paper";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { Feather } from "@expo/vector-icons";
 
-import {
-  Button,
-  Paragraph,
-  Dialog,
-  Portal,
-  useTheme
-} from "react-native-paper";
-
-const QRScanner = props => {
+const QRScanner = (props) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -30,7 +29,7 @@ const QRScanner = props => {
     })();
   }, []);
 
-  const handleBarCodeScanned = async data => {
+  const handleBarCodeScanned = async (data) => {
     setScanned(true);
     handleScan(data);
   };
@@ -41,13 +40,29 @@ const QRScanner = props => {
     return <Text>No access to camera</Text>;
   }
 
-  const handleScan = data => {
+  const handleScan = (data) => {
     setPackageNo(data);
     setConfirmVisible(true);
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
     setConfirmVisible(false);
+    AsyncStorage.getItem("AUTH_TOKEN").then((token) =>
+      fetch(`https://pickupandgo20200404185015.azurewebsites.net/api/orders`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id: packageNo,
+          state: `Wydano paczke ${packageNo}`,
+        }),
+      })
+        .then((r) => r.json())
+        .then((json) => console.log(json))
+    );
     navigation.pop();
   };
 
@@ -65,7 +80,7 @@ const QRScanner = props => {
           <View
             style={{
               alignSelf: "flex-start",
-              marginLeft: 20
+              marginLeft: 20,
             }}
           >
             <Feather
@@ -109,32 +124,32 @@ const styles = StyleSheet.create({
     borderColor: "white",
     width: "100%",
     height: "100%",
-    flex: 3
+    flex: 3,
   },
   middleRowColumn: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)" },
   text: {
     textAlign: "center",
     color: "white",
-    fontSize: 24
+    fontSize: 24,
   },
   absoluteFillObject: {
     position: "absolute",
     left: 0,
     top: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   },
   middleRow: {
     flex: 1,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   topAndDownRow: {
     backgroundColor: "rgba(0,0,0,0.7)",
     flex: 1,
     justifyContent: "space-evenly",
     alignItems: "center",
-    borderColor: "white"
-  }
+    borderColor: "white",
+  },
 });
 
 export { QRScanner };

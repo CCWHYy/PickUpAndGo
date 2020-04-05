@@ -1,21 +1,23 @@
+import { AsyncStorage, StyleSheet, View } from "react-native";
 import { Button, List, useTheme } from "react-native-paper";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
 
 import { ProductItem } from "../components/ProductItem";
 import { find } from "lodash";
 import produce from "immer";
+import { useNavigation } from "@react-navigation/native";
 
 const OrderDetails = ({ route }) => {
   const { order, readOnly } = route.params;
   const { colors } = useTheme();
+  const navigation = useNavigation();
 
   const [products, setProducts] = useState(
-    (order.products || []).map(p => ({ ...p, found: false }))
+    (order.products || []).map((p) => ({ ...p, found: false }))
   );
-  const modifyProduct = id => {
-    setProducts(state =>
-      produce(state, draft => {
+  const modifyProduct = (id) => {
+    setProducts((state) =>
+      produce(state, (draft) => {
         const toChange = find(draft, { id });
         toChange.found = !toChange.found;
       })
@@ -31,7 +33,7 @@ const OrderDetails = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.listContainer}>
         <List.Section>
-          {products.map(product => (
+          {products.map((product) => (
             <ProductItem
               key={product.id}
               product={product}
@@ -43,11 +45,33 @@ const OrderDetails = ({ route }) => {
       <Button
         mode="contained"
         labelStyle={{ fontWeight: "600", fontSize: 16 }}
+        onPress={() => {
+          AsyncStorage.getItem("AUTH_TOKEN").then((token) =>
+            fetch(
+              `https://pickupandgo20200404185015.azurewebsites.net/api/orders`,
+              {
+                method: "PUT",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  id: order.id,
+                  state: `Paczka gotowa ${order.id}`,
+                }),
+              }
+            )
+              .then((r) => r.json())
+              .then((json) => console.log(json))
+          );
+          navigation.navigate("Orders");
+        }}
         style={{
           maxWidth: "80%",
           marginTop: 50,
           height: 50,
-          justifyContent: "center"
+          justifyContent: "center",
         }}
         disabled={productsRemaining > 0}
         color={
@@ -69,9 +93,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
   },
   listContainer: {
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
