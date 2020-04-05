@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "EmployeeApp",
+    "name": "Łapu-Capu",
+    "slug": "Lapu-Capu",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "pl.ccwhy.lapucapu",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "pl.ccwhy.lapucapu",
+      "versionCode": 1
     }
   }
 }
