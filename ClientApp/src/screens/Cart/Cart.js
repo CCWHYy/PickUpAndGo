@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -18,8 +18,9 @@ import { ItemsList } from "../../components/ItemsList";
 import { CartItem } from "../../components/Item";
 import { getCartItems } from "../../redux/cart/selectors";
 import { getDetails } from "../../redux/store/selectors";
-import { makeOrder } from "../../redux/orders/actions";
+import {makeOrder, setOrders} from "../../redux/orders/actions";
 import { setCartItems } from "../../redux/cart/actions";
+import {useFetch} from "../../hooks/useFetch";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -69,43 +70,43 @@ export const CartScreen = ({ open, handleClose }) => {
   };
 
   return (
-    <Dialog
-      fullScreen
-      open={open}
-      onClose={handleClose}
-      TransitionComponent={Transition}
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Twój koszyk
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <ItemsList items={items} ItemComponent={CartItem} />
-      <Tooltip
-        title="Przejdź do płatności"
-        aria-label="Przejdź do płatności"
-        placement="left"
-      >
-        <Fab
-          aria-label="Przejdź do płatności"
-          color="secondary"
-          className={classes.fab}
-          onClick={handleMakeOrder}
+        <Dialog
+          fullScreen
+          open={open}
+          onClose={handleClose}
+          TransitionComponent={Transition}
         >
-          <CreditCard className={classes.extendedIcon} />
-        </Fab>
-      </Tooltip>
-    </Dialog>
+          <AppBar className={classes.appBar}>
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={handleClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.title}>
+                Twój koszyk
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <ItemsList items={items} ItemComponent={CartItem} />
+          <Tooltip
+            title="Przejdź do płatności"
+            aria-label="Przejdź do płatności"
+            placement="left"
+          >
+            <Fab
+              aria-label="Przejdź do płatności"
+              color="secondary"
+              className={classes.fab}
+              onClick={handleMakeOrder}
+            >
+              <CreditCard className={classes.extendedIcon} />
+            </Fab>
+          </Tooltip>
+        </Dialog>
   );
 };
 

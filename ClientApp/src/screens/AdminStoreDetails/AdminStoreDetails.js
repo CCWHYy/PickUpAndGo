@@ -7,6 +7,8 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
+import { ProtectedComponent } from "../../components/ProtectedComponent";
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -41,42 +43,44 @@ export const AdminStoreDetailsScreen = () => {
   const handleSnackbarClose = () => makeSnackbarOpen(false);
 
   return (
-    <div className={classes.root}>
-      <Card className={classes.form}>
-        <Typography variant="h4" component="h3" className={classes.header}>
-          Edytuj szczegóły sklepu
-        </Typography>
-        <TextField
-          label="Nazwa sklepu"
-          color="secondary"
-          className={classes.field}
-        />
-        <TextField
-          color="secondary"
-          label="Opis sklepu"
-          className={classes.field}
-        />
-        <Button
-          href=""
-          variant="contained"
-          color="secondary"
-          className={classes.field}
-          onClick={handleDetailsUpdate}
-        >
-          Zaktualizuj
-        </Button>
-      </Card>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left"
-        }}
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message="Zaktualizowano informacje o sklepie"
-      />
-    </div>
+      <ProtectedComponent>
+        <div className={classes.root}>
+          <Card className={classes.form}>
+            <Typography variant="h4" component="h3" className={classes.header}>
+              Edytuj szczegóły sklepu
+            </Typography>
+            <TextField
+              label="Nazwa sklepu"
+              color="secondary"
+              className={classes.field}
+            />
+            <TextField
+              color="secondary"
+              label="Opis sklepu"
+              className={classes.field}
+            />
+            <Button
+              href=""
+              variant="contained"
+              color="secondary"
+              className={classes.field}
+              onClick={handleDetailsUpdate}
+            >
+              Zaktualizuj
+            </Button>
+          </Card>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left"
+            }}
+            open={isSnackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            message="Zaktualizowano informacje o sklepie"
+          />
+        </div>
+      </ProtectedComponent>
   );
 };
 
