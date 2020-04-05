@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import { useFetch } from "../../hooks/useFetch";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 import {isRequestSuccessed} from "../../utils/request";
+import {setStorageToken} from "../../utils/localStorage";
 
 
 export const RegisterScreen = () => {
@@ -18,6 +19,13 @@ export const RegisterScreen = () => {
     const [isErrorSnackbarOpen, makeErrorSnackbarOpen] = useState(false);
     const [request, makeRequest, clearRequest] = useFetch({
         url: '/api/users',
+        options: {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        },
+    });
+    const [loginRequest, makeLoginRequest, clearLoginRequest] = useFetch({
+        url: '/api/users/login',
         options: {
             method: 'POST',
             body: JSON.stringify({ email, password })
@@ -38,10 +46,20 @@ export const RegisterScreen = () => {
         clearRequest();
     }
     if (isRequestSuccessed(request)) {
-        // TODO: perform login here
-        history.push('/');
+        makeLoginRequest();
+        clearRequest();
     }
   }, [clearRequest, request]);
+
+  useEffect(() => {
+      if (isRequestSuccessed(loginRequest)) {
+          setStorageToken(loginRequest.data.token);
+          history.push('/shops');
+      }
+      if (loginRequest.error) {
+          history.push('/');
+      }
+  }, [loginRequest]);
 
   const handleCloseMissingSnackbar = () => {
       makeMissingSnackbarOpen(false);

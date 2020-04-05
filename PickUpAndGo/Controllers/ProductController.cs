@@ -104,7 +104,7 @@ namespace PickUpAndGo.Controllers
             try
             {
                 var storeId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
-                if (storeId == null)
+                if (String.IsNullOrWhiteSpace(storeId))
                     return BadRequest("No such store id!");
 
                 if (String.IsNullOrWhiteSpace(createProductModel.Name) ||
