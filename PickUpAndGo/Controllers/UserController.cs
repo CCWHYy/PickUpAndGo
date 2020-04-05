@@ -36,7 +36,8 @@ namespace PickUpAndGo.Controllers
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
         /// <param name="jwtHandler"></param>
-        public UserController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper, IOptions<AppSettings> appsSettings,
+        public UserController(IHttpContextAccessor contextAccessor, AppDbContext dbContext, IMapper mapper,
+            IOptions<AppSettings> appsSettings,
             IJwtHandler jwtHandler) : base(contextAccessor, dbContext, mapper)
         {
             _appSettings = appsSettings.Value;
@@ -45,9 +46,10 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get user by ID [Working]
+        /// Get user by ID [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">User ID</param>
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserModel), 200)]
         [ProducesResponseType(400)]
@@ -60,12 +62,45 @@ namespace PickUpAndGo.Controllers
                 if (string.IsNullOrWhiteSpace(id))
                     return BadRequest("ID is required!");
 
-                var user = Uow.UserRepository.Get(id);
+                var currentUserId = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                var storeId = User.Claims.FirstOrDefault(x => x.Type == "StoreId")?.Value;
 
-                if (user != null)
-                    return Ok(Mapper.Map<UserModel>(user));
+                if (currentUserRole == Roles.User || currentUserRole == Roles.Employee)
+                {
+                    if (id != currentUserId)
+                        return Forbidden();
 
-                return NotFound("User with given ID does not exist!");
+                    var user = Uow.UserRepository.Get(id);
+
+                    if (user != null)
+                        return Ok(Mapper.Map<UserModel>(user));
+                }
+
+                if (currentUserRole == Roles.Owner)
+                {
+                    var store = Uow.StoreRepository.Query(x => x.Id == storeId, null, i => i.Users)
+                        .FirstOrDefault();
+
+                    if (store == null)
+                        return InternalServerError();
+
+                    var user = store.Users.FirstOrDefault(x => x.Id == id);
+
+                    if (user != null)
+                        return Ok(Mapper.Map<UserModel>(user));
+                    else
+                        return Forbidden();
+                }
+
+                if (currentUserRole == Roles.Admin)
+                {
+                    var user = Uow.UserRepository.Get(id);
+                    if (user != null)
+                        return Ok(Mapper.Map<UserModel>(user));
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -75,7 +110,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Register user [Roles: Anonymous, Owner, Admin] [Working]
+        /// Register user [Roles: Public, Owner, Admin] [Working]
         /// </summary>
         /// <param name="createUserModel"></param>
         [HttpPost]
@@ -171,7 +206,7 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Login [Working]
+        /// Login [Roles: Public] [Working]
         /// </summary>
         /// <param name="loginModel"></param>
         [HttpPost("login")]
@@ -195,7 +230,7 @@ namespace PickUpAndGo.Controllers
                     if (!passCheck.Verified)
                         return Unauthorized("Given email or password is incorrect!");
 
-                    var jwtToken = _jwtHandler.Create(user.Id, user.Role);
+                    var jwtToken = _jwtHandler.Create(user.Id, user.Role, user.StoreId);
                     return Ok(jwtToken);
                 }
                 else
@@ -211,9 +246,9 @@ namespace PickUpAndGo.Controllers
         }
 
         /// <summary>
-        /// Get current user details [Working]
+        /// Get current user details [Roles: User, Employee, Owner, Admin] [Working]
         /// </summary>
-        [Authorize]
+        [Authorize(Roles = "User, Employee, Owner, Admin")]
         [HttpGet("me")]
         [ProducesResponseType(typeof(UserJwtModel), 200)]
         [ProducesResponseType(400)]

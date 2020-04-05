@@ -1,42 +1,42 @@
 import { Checkbox, List, useTheme } from "react-native-paper";
 import React, { useState } from "react";
 
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
-const ProductItem = ({ product, orderTaken }) => {
-  const [checked, setChecked] = useState(false);
+const ProductItem = ({ product, modifyProduct }) => {
   const { colors } = useTheme();
-  console.log(product, checked);
   return (
     <List.Item
-      title={product}
-      titleStyle={{ marginLeft: 20, fontWeight: "600", fontSize: 16 }}
+      title={product.name}
+      description={product.brand}
+      titleStyle={{ fontWeight: "600", fontSize: 18 }}
       style={{
-        height: 60,
         marginTop: 10,
         justifyContent: "center",
         alignItems: "center"
       }}
       right={
-        orderTaken
+        modifyProduct
           ? () => (
               <View
                 style={{
-                  marginRight: 30,
+                  fontSize: 16,
+                  marginRight: 10,
+                  flexDirection: "column",
                   justifyContent: "center",
-                  backgroundColor: colors.secondary.light,
-                  borderRadius: "1500",
                   alignItems: "center",
                   height: 40,
-                  width: 40
+                  width: 70
                 }}
               >
                 <Checkbox
                   color="black"
-                  uncheckedColor="red"
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => setChecked(!checked)}
+                  status={product.found ? "checked" : "unchecked"}
+                  onPress={() => modifyProduct(product.id)}
                 />
+                <Text>
+                  {product.quantity} {product.quantityUnit}
+                </Text>
               </View>
             )
           : null

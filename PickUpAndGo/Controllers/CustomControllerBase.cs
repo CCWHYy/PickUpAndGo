@@ -55,5 +55,12 @@ namespace PickUpAndGo.Controllers
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected IActionResult Created<T>(T model) => StatusCode(201, model);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        protected IActionResult Forbidden(string msg = "Forbidden") => StatusCode(403, msg);
     }
 }

@@ -1,46 +1,62 @@
 import { StyleSheet, View } from "react-native";
 
+import { useTheme } from "react-native-paper";
 import { Fab } from "../components/Fab";
 import { Header } from "../components/Header";
-import { MyList } from "../components/List";
-import { Products } from "./Products";
+import { OrdersList } from "../components/OrdersList";
+import { OrderDetails } from "./OrderDetails";
 import { QRScanner } from "./QRScanner";
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-const orderss = [
+const orders = [
   {
-    id: "1",
-    number: "32321",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-    date: "12.12.2019 14:32"
-  },
-  {
-    id: "2",
-    number: "30985",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-    date: "12.12.2019 14:32"
-  },
-  {
-    id: "3",
-    number: "74628",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-    date: "12.12.2019 14:32"
-  },
-  {
-    id: "4",
-    number: "5934u953",
-    products: ["mleko", "miód", "wódeczka", "chlebek"],
-    date: "12.12.2019 14:32"
+    userId: "61F1C1DC-E262-470A-950C-D6F3A1356C18",
+    storeId: "19351FF9-AC6B-427F-9BBE-8170436BB752",
+    id: "19351FF9-AC6B-427F-9BBE-8170436CB752",
+    orderNumber: "123",
+    products: [
+      {
+        id: "3325F3AE-DD84-41A8-A4D0-1043743C6C90",
+        storeId: "19351FF9-AC6B-427F-9BBE-8170436BB752",
+        name: "prod",
+        brand: "bradadadna",
+        quantity: 0,
+        quantityUnit: "string",
+        price: 22,
+        category: "food"
+      },
+      {
+        id: "51AD90BE-FB14-4815-9C18-69FA1554C1F0",
+        storeId: "19351FF9-AC6B-427F-9BBE-8170436BB752",
+        name: "string",
+        brand: "string",
+        quantity: 15,
+        quantityUnit: "string",
+        price: 1,
+        category: "string"
+      },
+      {
+        id: "96AB6B4D-1E8B-4C3B-81B6-0E0DB891B48D",
+        storeId: "19351FF9-AC6B-427F-9BBE-8170436BB752",
+        name: "string",
+        brand: "string",
+        quantity: 0,
+        quantityUnit: "string",
+        price: 12,
+        category: "string"
+      }
+    ]
   }
 ];
 
-const TakeOrdersScreen = props => {
+const OrdersScreen = props => {
   const { navigation } = props;
+
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
-        <MyList items={orderss} />
+        <OrdersList orders={orders} />
       </View>
       <Fab onPress={() => navigation.navigate("QRScanner")} />
     </View>
@@ -49,7 +65,9 @@ const TakeOrdersScreen = props => {
 
 const Stack = createStackNavigator();
 
-const TakeOrdersStack = () => {
+const OrdersStack = () => {
+  const { colors } = useTheme();
+
   return (
     <Stack.Navigator
       initialRouteName="Orders"
@@ -61,14 +79,27 @@ const TakeOrdersStack = () => {
       }}
     >
       <Stack.Screen
-        name="Order"
-        component={TakeOrdersScreen}
-        options={{ headerTitle: "Do wzięcia" }}
+        name="Orders"
+        component={OrdersScreen}
+        options={{
+          title: "Nowe zamówienia",
+          headerStyle: {
+            backgroundColor: colors.primary.main
+          },
+          headerTintColor: colors.primary.contrastText
+        }}
       />
       <Stack.Screen
-        name="Products"
-        component={Products}
-        options={{ headerTitle: "Produkty" }}
+        name="OrderDetails"
+        component={OrderDetails}
+        options={({ route }) => ({
+          title: `#${route.params.order.orderNumber} - szczegóły`,
+          headerStyle: {
+            // backgroundColor: colors.primary.main
+            backgroundColor: "red"
+          },
+          headerTintColor: colors.primary.contrastText
+        })}
       />
       <Stack.Screen
         name="QRScanner"
@@ -92,4 +123,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { TakeOrdersStack };
+export { OrdersStack };

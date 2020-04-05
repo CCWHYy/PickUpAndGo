@@ -1,12 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 
 import { ItemsList } from "../../components/ItemsList";
 import { ShopItem } from "../../components/Item";
-import { setStoreItems } from "../../redux/store/actions";
-import { getStoreItems } from "../../redux/store/selectors";
+import {setStoreItems} from "../../redux/store/actions";
+import { getStoreItems, getDetails } from "../../redux/store/selectors";
+import { ProtectedComponent } from "../../components/ProtectedComponent";
+import {useFetch} from "../../hooks/useFetch";
+import { isRequestSuccessed } from "../../utils/request";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,34 +26,38 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const items = [
-  {
-    id: 1,
-    name: "Bułeczki",
-    price: "1.90 PLN",
-    description: "przepyszne bułeczki"
-  },
-  {
-    id: 2,
-    name: "Wódeczka",
-    price: "21.90 PLN",
-    description: "przepyszna wódeczka"
-  }
-];
-
 export const ShopScreen = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const storeItems = useSelector(getStoreItems);
+  const details = useSelector(getDetails);
+
+  const [request, makeRequest, clearRequest] = useFetch({
+    url: `/api/products?id=${details.id}`,
+  });
 
   useEffect(() => {
-    dispatch(setStoreItems(items));
-  }, [dispatch]);
+    if (details.id) {
+      makeRequest();
+    } else {
+      history.push('/shops');
+    }
+  }, [details]);
+
+  useEffect(() => {
+    if (isRequestSuccessed(request)) {
+      dispatch(setStoreItems(request.data));
+      clearRequest();
+    }
+  }, [request]);
 
   return (
-    <div className={classes.root}>
-      <ItemsList items={storeItems} ItemComponent={ShopItem} />
-    </div>
+      <ProtectedComponent>
+        <div className={classes.root}>
+          <ItemsList items={storeItems} ItemComponent={ShopItem} />
+        </div>
+      </ProtectedComponent>
   );
 };
 

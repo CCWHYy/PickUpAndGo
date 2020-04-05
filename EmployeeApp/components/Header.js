@@ -1,4 +1,5 @@
 import { Appbar, Avatar, useTheme } from "react-native-paper";
+import { Feather } from "@expo/vector-icons";
 
 import React from "react";
 import { TouchableOpacity } from "react-native";
@@ -13,26 +14,22 @@ const Header = ({ scene, previous, navigation }) => {
       ? options.title
       : scene.route.name;
   return (
-    <Appbar.Header theme={{ colors: { primary: theme.colors.surface } }}>
+    <Appbar.Header theme={{ colors: { primary: theme.colors.primary.main } }}>
       {previous ? (
         <Appbar.BackAction
           onPress={() => navigation.goBack()}
           color={theme.colors.primary.contrastColor}
         />
       ) : (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.openDrawer();
+        <Feather
+          name="menu"
+          color="black"
+          style={{
+            marginLeft: 16
           }}
-        >
-          <Avatar.Image
-            size={40}
-            source={{
-              uri:
-                "https://miro.medium.com/fit/c/80/80/1*9ZtET_L1852yXaDZJUo9CQ.png"
-            }}
-          />
-        </TouchableOpacity>
+          size={24}
+          onPress={() => navigation.openDrawer()}
+        />
       )}
       <Appbar.Content titleStyle={{ fontWeight: "600" }} title={title} />
     </Appbar.Header>
